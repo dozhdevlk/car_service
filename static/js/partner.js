@@ -84,6 +84,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 	// Инициализация загрузки услуг при загрузке страницы
 	fetchPartnerOfferings(partnerId);
+	fetchPartnerAnnouncements(partnerId);
 
 	// Загружаем данные партнера
 	fetch(`/api/partner/${partnerId}`)
