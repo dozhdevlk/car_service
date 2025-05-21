@@ -234,8 +234,8 @@ async function renderServicesTable() {
                             <td>${service.approved ? '✅ Одобрен' : '🔄 На проверке'}</td>
                             <td>
                                 ${!service.approved ? `
-                                    <button class="approve" onclick="approveService(${service.id}, "TRUE")">Одобрить</button>
-                                ` : `<button class="approve" onclick="approveService(${service.id}, "FALSE")">На проверку</button>`}
+                                    <button class="approve" onclick="approveService(${service.id})">Одобрить</button>
+                                ` : `<button class="disapprove" onclick="disapproveService(${service.id})">На проверку</button>`}
                             </td>
                         </tr>
                     `).join('')}
@@ -256,12 +256,30 @@ async function approveService(serviceId, flag) {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ service_id: serviceId, flag: flag})
+			body: JSON.stringify({ service_id: serviceId})
 		});
 		if (response.ok) {
 			renderServicesTable();
 		} else {
 			alert('Ошибка при одобрении сервиса');
+		}
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+async function disapproveService(serviceId) {
+	try {
+		const response = await fetch('/api/admin/disapprove-service', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json'
+			},
+			body: JSON.stringify({ service_id: serviceId})
+		});
+		if (response.ok) {
+			renderServicesTable();
+		} else {
+			alert('Ошибка при отправке сервиса на проверку');
 		}
 	} catch (error) {
 		console.error('Error:', error);

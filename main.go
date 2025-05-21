@@ -165,6 +165,7 @@ func main() {
 	r.HandleFunc("/api/admin/stats", adminStatsHandler).Methods("GET")
 	r.HandleFunc("/api/admin/services", adminServicesHandler).Methods("GET")
 	r.HandleFunc("/api/admin/approve-service", adminApproveServiceHandler).Methods("POST")
+	r.HandleFunc("/api/admin/disapprove-service", adminDisApproveServiceHandler).Methods("POST")
 	r.HandleFunc("/api/admin/users", adminUsersHandler).Methods("GET")
 	r.HandleFunc("/api/admin/delete-user/{id}", deleteUser).Methods("DELETE")
 
@@ -832,8 +833,7 @@ func adminServicesHandler(w http.ResponseWriter, r *http.Request) {
 
 func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		ServiceID int    `json:"service_id"`
-		Approve   string `json:"flag"`
+		ServiceID int `json:"service_id"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -841,7 +841,7 @@ func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE services SET approved = $1 WHERE id = $2", req.Approve, req.ServiceID)
+	_, err := db.Exec("UPDATE services SET approved = TRUE WHERE id = $2", req.ServiceID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -859,7 +859,34 @@ func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.WriteHeader(http.StatusOK)
 }
+func adminDisApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
+	var req struct {
+		ServiceID int `json:"service_id"`
+	}
 
+	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_, err := db.Exec("UPDATE services SET approved = FALSE WHERE id = $2", req.ServiceID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	session, _ := store.Get(r, "session")
+	adminID, ok := session.Values["user_id"].(int)
+	if ok {
+		_, err = db.Exec("INSERT INTO admin_logs (admin_id, action) VALUES ($1, $2)",
+			adminID, fmt.Sprintf("Approved service ID %d", req.ServiceID))
+		if err != nil {
+			log.Printf("Error logging admin action: %v", err)
+		}
+	}
+
+	w.WriteHeader(http.StatusOK)
+}
 func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
 	rows, err := db.Query("SELECT id, name, email, phone, role FROM users ORDER BY id ASC")
 	if err != nil {
