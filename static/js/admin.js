@@ -234,8 +234,8 @@ async function renderServicesTable() {
                             <td>${service.approved ? '✅ Одобрен' : '🔄 На проверке'}</td>
                             <td>
                                 ${!service.approved ? `
-                                    <button class="approve" onclick="approveService(${service.id})">Одобрить</button>
-                                ` : ''}
+                                    <button class="approve" onclick="approveService(${service.id}, true)">Одобрить</button>
+                                ` : `<button class="approve" onclick="approveService(${service.id}, false)">На проверку</button>`}
                             </td>
                         </tr>
                     `).join('')}
@@ -249,14 +249,14 @@ async function renderServicesTable() {
 }
 
 // Одобрение сервиса
-async function approveService(serviceId) {
+async function approveService(serviceId, flag) {
 	try {
 		const response = await fetch('/api/admin/approve-service', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ service_id: serviceId })
+			body: JSON.stringify({ service_id: serviceId, flag: flag})
 		});
 		if (response.ok) {
 			renderServicesTable();
