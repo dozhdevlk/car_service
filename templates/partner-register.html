@@ -1,0 +1,279 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Регистрация автосервиса</title>
+	<link rel="stylesheet" href="../static/css/style.css">
+	<style>
+		.container {
+			max-width: 600px;
+			margin: 0 auto;
+			padding: 20px;
+		}
+
+		header {
+			text-align: center;
+			margin-bottom: 20px;
+		}
+
+		form {
+			display: flex;
+			flex-direction: column;
+			gap: 15px;
+		}
+
+		.form-group {
+			position: relative;
+			margin-bottom: 10px;
+		}
+
+		.form-group label {
+			font-weight: bold;
+			margin-bottom: 5px;
+			display: block;
+		}
+
+		.form-group input {
+			width: 100%;
+			padding: 8px;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			box-sizing: border-box;
+		}
+
+		.address-hint {
+			font-size: 0.8em;
+			color: #666;
+			margin-top: 5px;
+		}
+
+		.suggestions-container {
+			position: absolute;
+			top: 100%;
+			left: 0;
+			right: 0;
+			background-color: white;
+			border: 1px solid #ccc;
+			border-radius: 4px;
+			max-height: 200px;
+			overflow-y: auto;
+			z-index: 1000;
+			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+			display: none;
+		}
+
+		.suggestion-item {
+			padding: 8px;
+			cursor: pointer;
+		}
+
+		.suggestion-item:hover {
+			background-color: #f0f0f0;
+		}
+
+		.suggestions-container.active {
+			display: block;
+		}
+
+		button {
+			padding: 10px;
+			background-color: #2ecc71;
+			color: white;
+			border: none;
+			border-radius: 4px;
+			cursor: pointer;
+		}
+
+		button:hover {
+			background-color: #27ae60;
+		}
+
+		#logoPreview img {
+			border-radius: 4px;
+		}
+
+		.error-message {
+			color: red;
+			font-size: 0.9em;
+			margin-top: 5px;
+			display: none;
+		}
+
+		.time-selects {
+			display: flex;
+			gap: 5px;
+			align-items: center;
+			margin-top: 5px;
+		}
+
+		.working-day .time-selects {
+			display: none;
+		}
+
+		.checkbox-container {
+			width: 50%;
+			display: flex;
+			align-items: center;
+			gap: 5px;
+			margin-top: 5px;
+		}
+
+		.checkbox-container span {
+			font-size: 14px;
+			width: 70%;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<h1>Стать партнером</h1>
+			<p>Заполните форму для подключения вашего автосервиса</p>
+		</header>
+
+		<form id="partnerForm">
+			<h2>Данные сервиса</h2>
+			<input type="text" id="serviceName" placeholder="Название сервиса" required>
+			<!-- <input type="text" id="serviceAddress" placeholder="Адрес" required> -->
+			<!-- <input type="text" id="serviceAddress" placeholder="Адрес" required>
+			<div id="addressSuggestions" class="suggestions-container"></div> -->
+			<div class="form-group">
+				<label for="serviceAddress">Адрес сервиса*</label>
+				<input type="text" id="serviceAddress" placeholder="Начните вводить адрес" required>
+				<div id="addressSuggestions" class="suggestions-container"></div>
+				<div class="address-hint">Пожалуйста, введите полный адрес включая номер дома</div>
+			</div>
+			<input value="" id="servicePhone" class="tel">
+
+			<h2>Логотип</h2>
+			<input type="file" id="logoUpload" accept="image/*">
+			<div id="logoPreview" style="margin: 15px 0; max-width: 200px;"></div>
+
+			<h2>Данные владельца</h2>
+			<input type="text" id="ownerName" placeholder="Ваше имя" required>
+			<!-- <input type="email" id="ownerEmail" placeholder="Email" required> -->
+			<input type="email" id="ownerEmail" placeholder="Email" required
+				pattern="[a-z0-9._%+-]+@[a-z0-9.-]+\.[a-z]{2,}$" title="Введите корректный email">
+			<input type="password" id="ownerPassword" placeholder="Пароль" required>
+
+			<h2>Часы работы</h2>
+			<div id="workingHours">
+				<div class="form-group working-day">
+					<label>
+						Понедельник
+						<div class="checkbox-container">
+							<input type="checkbox" class="day-active" name="mon_active">
+							<span>Рабочий день</span>
+						</div>
+					</label>
+					<div class="time-selects">
+						<select name="mon_from_hour" class="hour-select"></select> :
+						<select name="mon_from_minute" class="minute-select"></select> до
+						<select name="mon_to_hour" class="hour-select"></select> :
+						<select name="mon_to_minute" class="minute-select"></select>
+					</div>
+				</div>
+				<div class="form-group working-day">
+					<label>
+						Вторник
+						<div class="checkbox-container">
+							<input type="checkbox" class="day-active" name="tue_active">
+							<span>Рабочий день</span>
+						</div>
+					</label>
+					<div class="time-selects">
+						<select name="tue_from_hour" class="hour-select"></select> :
+						<select name="tue_from_minute" class="minute-select"></select> до
+						<select name="tue_to_hour" class="hour-select"></select> :
+						<select name="tue_to_minute" class="minute-select"></select>
+					</div>
+				</div>
+				<div class="form-group working-day">
+					<label>
+						Среда
+						<div class="checkbox-container">
+							<input type="checkbox" class="day-active" name="wed_active">
+							<span>Рабочий день</span>
+						</div>
+					</label>
+					<div class="time-selects">
+						<select name="wed_from_hour" class="hour-select"></select> :
+						<select name="wed_from_minute" class="minute-select"></select> до
+						<select name="wed_to_hour" class="hour-select"></select> :
+						<select name="wed_to_minute" class="minute-select"></select>
+					</div>
+				</div>
+				<div class="form-group  working-day">
+					<label>
+						Четверг
+						<div class="checkbox-container">
+							<input type="checkbox" class="day-active" name="thu_active">
+							<span>Рабочий день</span>
+						</div>
+					</label>
+					<div class="time-selects">
+						<select name="thu_from_hour" class="hour-select"></select> :
+						<select name="thu_from_minute" class="minute-select"></select> до
+						<select name="thu_to_hour" class="hour-select"></select> :
+						<select name="thu_to_minute" class="minute-select"></select>
+					</div>
+				</div>
+				<div class="form-group working-day">
+					<label>
+						Пятница
+						<div class="checkbox-container">
+							<input type="checkbox" class="day-active" name="fri_active">
+							<span>Рабочий день</span>
+						</div>
+					</label>
+					<div class="time-selects">
+						<select name="fri_from_hour" class="hour-select"></select> :
+						<select name="fri_from_minute" class="minute-select"></select> до
+						<select name="fri_to_hour" class="hour-select"></select> :
+						<select name="fri_to_minute" class="minute-select"></select>
+					</div>
+				</div>
+				<div class="form-group working-day">
+					<label>
+						Суббота
+						<div class="checkbox-container">
+							<input type="checkbox" class="day-active" name="sat_active">
+							<span>Рабочий день</span>
+						</div>
+					</label>
+					<div class="time-selects">
+						<select name="sat_from_hour" class="hour-select"></select> :
+						<select name="sat_from_minute" class="minute-select"></select> до
+						<select name="sat_to_hour" class="hour-select"></select> :
+						<select name="sat_to_minute" class="minute-select"></select>
+					</div>
+				</div>
+				<div class="form-group working-day">
+					<label>
+						Воскресенье
+						<div class="checkbox-container">
+							<input type="checkbox" class="day-active" name="sun_active">
+							<span>Рабочий день</span>
+						</div>
+					</label>
+					<div class="time-selects">
+						<select name="sun_from_hour" class="hour-select"></select> :
+						<select name="sun_from_minute" class="minute-select"></select> до
+						<select name="sun_to_hour" class="hour-select"></select> :
+						<select name="sun_to_minute" class="minute-select"></select>
+					</div>
+				</div>
+			</div>
+
+			<button type="submit">Отправить заявку</button>
+		</form>
+	</div>
+	<div id="emailError" class="error-message"></div>
+
+	<script src="../static/js/partner-page.js"></script>
+</body>
+
+</html>

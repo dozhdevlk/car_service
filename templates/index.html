@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Автосервис</title>
+    <link rel="stylesheet" href="../static/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Автосервис</h1>
+            <div id="auth-section">
+                <div id="login-form">
+                    <h2>Вход</h2>
+                    <form id="loginForm">
+                        <input type="email" id="loginEmail" placeholder="Email" required>
+                        <input type="password" id="loginPassword" placeholder="Пароль" required>
+                        <button type="submit">Войти</button>
+                    </form>
+                    <p>Нет аккаунта? <a href="#" id="showRegister">Зарегистрироваться</a></p>
+                </div>
+
+                <div id="register-form" style="display: none;">
+                    <h2>Регистрация</h2>
+                    <form id="registerForm">
+                        <input type="text" id="registerName" placeholder="Имя" required>
+                        <input type="email" id="registerEmail" placeholder="Email" required>
+						<input type="phone" id="registerPhone" placeholder="Телефон" required>
+                        <input type="password" id="registerPassword" placeholder="Пароль" required>
+                        <select id="registerRole">
+                            <option value="client">Клиент</option>
+                            <option value="master">Мастер</option>
+                            <option value="admin_service">Админ сервиса</option>
+							<option value="admin">Админ</option>
+                        </select>
+                        <button type="submit">Зарегистрироваться</button>
+                    </form>
+                    <p>Уже есть аккаунт? <a href="#" id="showLogin">Войти</a></p>
+                </div>
+
+                <div id="user-info" style="display: none;">
+                    <p>Добро пожаловать, <span id="user-name"></span>!</p>
+					<button id="admin-btn" style="display: none;">Админ-панель</button>
+					<button id="control-btn" style="display: none;">Управлять сервисом</button>
+                    <button id="logout-btn">Выйти</button>
+                </div>
+            </div>
+        </header>
+
+        <main>
+			<section class="promo-carousel">
+				<div class="carousel-container">
+				  <div class="carousel-track">
+					<div class="carousel-slide">
+					  <img src="/images/promo1.jpg" alt="Акция 1">
+					</div>
+					<div class="carousel-slide">
+					  <img src="/images/promo2.jpg" alt="Акция 2">
+					</div>
+					<div class="carousel-slide">
+					  <img src="/images/promo3.jpg" alt="Акция 3">
+					</div>
+				  </div>
+				  
+				  <button class="carousel-btn prev-btn">&larr;</button>
+				  <button class="carousel-btn next-btn">&rarr;</button>
+				  <div class="carousel-dots">
+					<span class="dot active"></span>
+					<span class="dot"></span>
+					<span class="dot"></span>
+				  </div>
+				</div>
+			  </section>
+			<div class="partners-container">
+				<div class="partners-list">
+				  <h2>Наши партнеры</h2>
+				  <div id="partners-list" class="partner-items"></div>
+				</div>
+				
+				<div class="partners-map">
+				  <div id="map" style="width: 100%; height: 600px;"></div>
+				</div>
+			</div>
+			
+			<div class="services-section">
+				<h2>Доступные услуги</h2>
+				<div class="filter-controls">
+                    <input type="text" id="service-search" placeholder="Поиск услуги...">
+                    <select id="price-sort">
+                        <option value="none">Сортировка по цене</option>
+                        <option value="asc">От низкой к высокой</option>
+                        <option value="desc">От высокой к низкой</option>
+                    </select>
+                </div>
+				<div id="services-list"></div>
+			</div>
+			
+			<!-- <section id="partners-section">
+				<h2>Наши партнеры</h2>
+				<div id="partners-list" class="partners-grid"></div>
+			</section>
+            <section id="services-section">
+                <h2>Наши услуги</h2>
+                <div id="services-list"></div>
+            </section> -->
+        </main>
+    </div>
+
+    <script src="../static/js/main.js"></script>
+	<script src="../static/js/env.js"></script>
+	<script>
+		// Храним текущие данные для минимизации запросов
+		let allServices = [];
+		let currentSortOrder = 'none';
+	
+		// Загрузка услуг с сервера
+		function fetchServices() {
+			fetch('/api/offerings')
+				.then(response => response.json())
+				.then(services => {
+					allServices = services;
+					renderServices(); // Первоначальный рендеринг
+				})
+				.catch(error => {
+					console.error('Ошибка загрузки услуг:', error);
+					document.getElementById('services-list').innerHTML = '<p>Не удалось загрузить услуги.</p>';
+				});
+		}
+	
+		// Рендеринг услуг с учётом поиска и сортировки
+		function renderServices() {
+			const searchTerm = document.getElementById('service-search').value.toLowerCase();
+			const servicesList = document.getElementById('services-list');
+			servicesList.innerHTML = '';
+	
+			// Фильтрация по поисковому запросу
+			const filteredServices = allServices.filter(service =>
+				service.name.toLowerCase().includes(searchTerm)
+			);
+	
+			// Сортировка по цене
+			filteredServices.forEach(service => {
+				service.partners.sort((a, b) => a.price - b.price);
+				if (currentSortOrder === 'desc') {
+					service.partners.reverse();
+				}
+			});
+	
+			// Отображение услуг
+			filteredServices.forEach(service => {
+				const serviceCard = document.createElement('div');
+				serviceCard.className = 'service-card';
+				serviceCard.innerHTML = `
+					<div class="service-details">
+						<h3>${service.name}</h3>
+						<ul class="service-partners">
+							${service.partners.map(partner => `
+								<li>
+									<a href="/partner/${partner.id}" class="back-btn">
+										${partner.name} - от ${partner.price.toLocaleString('ru-RU')} руб.
+									</a>
+								</li>
+							`).join('')}
+						</ul>
+					</div>
+				`;
+				servicesList.appendChild(serviceCard);
+			});
+		}
+	
+		// Обработчик поиска
+		document.getElementById('service-search').addEventListener('input', () => {
+			renderServices();
+		});
+	
+		// Обработчик сортировки
+		document.getElementById('price-sort').addEventListener('change', (e) => {
+			currentSortOrder = e.target.value;
+			renderServices();
+		});
+	
+		// Инициализация
+		fetchServices();
+	</script>
+	<!-- <script src="/backend/static/js/script.js"></script> -->
+	<footer>
+		<button id="partner-btn" onclick="window.location.href='/partner-register'">
+			Стать нашим партнером
+		</button>
+	</footer>
+	
+</body>
+</html>

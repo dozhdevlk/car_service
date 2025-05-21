@@ -1,0 +1,41 @@
+services:
+  # Сервис для PostgreSQL
+  db:
+    image: postgres:17.4
+    container_name: car_service_db
+    environment:
+      POSTGRES_USER: dozhdevlk
+      POSTGRES_PASSWORD: 20202012
+      POSTGRES_DB: car_service
+    volumes:
+      - postgres_car_service_db_data:/var/lib/postgresql/db/postgres_car_service_db_data # Сохраняем данные базы данных
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "dozhdevlk", "-d", "car_service", "-h", "localhost"]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+
+  # Сервис для Go приложения
+  go_app:
+    build: .
+    env_file: .env
+    container_name: car_service_server
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_USER: dozhdevlk
+      DB_PASSWORD: 20202012
+      DB_NAME: car_service
+    ports:
+      - "8080:8080"
+    volumes:
+      - /home/dima/data/car_service/uploads:/app/uploads
+
+
+
+volumes:
+  postgres_car_service_db_data:
+    driver: local

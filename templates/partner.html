@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Страница партнера</title>
+	<link rel="stylesheet" href="/static/css/style.css">
+	<style>
+		.error-message {
+			color: red;
+			display: none;
+			margin-top: 5px;
+		}
+
+		.success-message {
+			color: green;
+			display: none;
+			margin-top: 5px;
+		}
+
+		.time-selectors {
+			display: flex;
+			gap: 10px;
+		}
+
+		.service-form {
+			margin-top: 20px;
+			padding: 15px;
+			border: 1px solid #ddd;
+			border-radius: 5px;
+		}
+
+		.form-group input,
+		.form-group select {
+			width: 100%;
+			padding: 8px;
+			margin-top: 5px;
+		}
+
+		.manage-btn {
+			padding: 10px 20px;
+			margin-top: 20px;
+			margin: 5px;
+			background-color: #007bff;
+			color: white;
+			border: none;
+			border-radius: 5px;
+			text-decoration: none;
+			display: none;
+			height: 30px;
+		}
+
+		.manage-btn:hover {
+			background-color: #0056b3;
+		}
+
+		pre#partner-working-hours {
+			font-family: none;
+		}
+
+		.partner-page-container {
+			display: flex;
+			flex-wrap: wrap;
+			gap: 20px;
+			max-width: 80%;
+			/* Убираем ограничение по максимальной ширине */
+			width: 100%;
+			/* Устанавливаем ширину на 100% */
+			padding: 20px;
+			background-color: #fff;
+			box-sizing: border-box;
+			/* Чтобы padding не выходил за пределы */
+		}
+
+		.container {
+			max-width: 100%;
+			width: 100%;
+			padding: 0;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			justify-content: flex-start;
+			justify-content: center;
+		}
+
+		body {
+			margin: 0;
+			padding: 0;
+			width: 100%;
+		}
+
+
+		.partner-details {
+			flex: 2;
+			/* 2 части от 3 для информации о партнере */
+			min-width: 300px;
+			/* Минимальная ширина */
+		}
+
+		.right-sidebar {
+			height: 100%;
+			background-color: #f4f4f4;
+			padding: 20px;
+			box-sizing: border-box;
+			display: flex;
+			flex-direction: column;
+			border-radius: 8px;
+		}
+
+		.right-sidebar>* {
+			flex: 1;
+		}
+
+		.booking-form-container,
+		.services-section {
+			align-items: center;
+			margin-top: 20px;
+			width: 100%;
+		}
+
+		.announcements-section {
+			margin-top: 30px;
+			width: 100%;
+		}
+
+		.announcements-container {
+			display: flex;
+			justify-content: space-between;
+			gap: 20px;
+			flex-wrap: wrap;
+			/* Чтобы блоки не выходили за пределы */
+		}
+
+		.announcement-card {
+			width: 48%;
+			/* Каждый блок займет половину ширины контейнера */
+			background-color: #f4f4f4;
+			padding: 20px;
+			border-radius: 8px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+			box-sizing: border-box;
+		}
+
+		.announcement-card img {
+			width: 100%;
+			height: auto;
+			border-radius: 8px;
+		}
+
+		.announcement-card h3 {
+			margin-top: 10px;
+			font-size: 1.2rem;
+		}
+
+		.announcement-card p {
+			margin-top: 10px;
+			font-size: 1rem;
+			color: #333;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="container">
+		<header>
+			<h1>Информация о партнере</h1>
+			<a href="#" id="manage-btn" class="manage-btn">Управление</a>
+			<a href="/" class="back-btn">Вернуться на главную</a>
+		</header>
+
+		<div class="partner-page-container">
+			<div class="partner-details">
+				<div id="partner-logo" class="partner-image-container">
+					<img id="partner-logo-img" class="partner-image" alt="Логотип партнера">
+				</div>
+				<div class="partner-info">
+					<h2 id="partner-name"></h2>
+					<p><strong>Адрес:</strong> <span id="partner-address"></span></p>
+					<p><strong>Телефон:</strong> <span id="partner-phone"></span></p>
+					<p><strong>Описание:</strong> <span id="partner-description"></span></p>
+					<p><strong>Часы работы:</strong></p>
+					<pre id="partner-working-hours"></pre>
+				</div>
+			</div>
+
+			<div class="right-sidebar" style="display: block;">
+				<div style="width:560px;height:800px;overflow:hidden;position:relative;"><iframe style="width:100%;height:100%;border:1px solid #e6e6e6;border-radius:8px;box-sizing:border-box" src="https://yandex.ru/maps-reviews-widget/1006810500?comments"></iframe><a href="https://yandex.ru/maps/org/akv/1006810500/" target="_blank" style="box-sizing:border-box;text-decoration:none;color:#b3b3b3;font-size:10px;font-family:YS Text,sans-serif;padding:0 20px;position:absolute;bottom:8px;width:100%;text-align:center;left:0;overflow:hidden;text-overflow:ellipsis;display:block;max-height:14px;white-space:nowrap;padding:0 16px;box-sizing:border-box">Акv на карте Казани — Яндекс Карты</a></div>
+			</div>
+
+
+			<div class="booking-form-container">
+				<h2>Записаться на сервис</h2>
+				<form id="booking-form">
+					<div class="form-group">
+						<label for="booking-date">Выберите дату:</label>
+						<input type="date" id="booking-date" name="booking-date" required>
+					</div>
+					<div class="form-group">
+						<label>Выберите время:</label>
+						<div class="time-selectors">
+							<select id="booking-time" name="booking-time" required>
+							</select>
+						</div>
+					</div>
+					<button id="submit-booking" type="button">Записаться</button>
+					<p id="booking-message" style="display: none;"></p>
+				</form>
+			</div>
+
+			<div class="services-section">
+				<h2>Доступные услуги</h2>
+				<div class="filter-controls">
+					<input type="text" id="service-search" placeholder="Поиск услуги...">
+				</div>
+				<div id="services-list"></div>
+			</div>
+
+			<div class="announcements-section">
+				<h2>Объявления партнера</h2>
+				<div class="announcements-container">
+					<div class="announcement-card">
+						<img src="announcement-image.jpg" alt="Объявление 1">
+						<h3>Заголовок объявления 1</h3>
+						<p>Текст объявления 1. Подробности о текущем предложении или информации для клиентов.</p>
+					</div>
+					<div class="announcement-card">
+						<img src="announcement-image.jpg" alt="Объявление 2">
+						<h3>Заголовок объявления 2</h3>
+						<p>Текст объявления 2. Вторая информация для клиентов, что можно использовать или узнать.</p>
+					</div>
+				</div>
+			</div>
+
+
+		</div>
+	</div>
+
+	<script src="/static/js/partner.js"></script>
+	<script>
+		console.log('Partner page loaded');
+		loadBookings();
+	</script>
+</body>
+
+</html>

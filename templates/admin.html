@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Админ-панель</title>
+	<link rel="stylesheet" href="/static/css/admin.css">
+	<style>
+		.tabs {
+			display: flex;
+			border-bottom: 1px solid #ccc;
+			margin-bottom: 20px;
+		}
+
+		.tab {
+			padding: 10px 20px;
+			cursor: pointer;
+			font-weight: bold;
+			border-bottom: 3px solid transparent;
+			transition: border-bottom 0.3s;
+		}
+
+		.tab.active {
+			border-bottom: 3px solid #007bff;
+			color: #007bff;
+		}
+
+		.booking-card {
+			border: 1px solid #ddd;
+			padding: 10px;
+			margin-bottom: 10px;
+			border-radius: 5px;
+		}
+
+		.booking-info,
+		.booking-actions {
+			display: inline-block;
+			vertical-align: top;
+		}
+
+		.booking-actions button {
+			margin-right: 5px;
+			padding: 5px 10px;
+		}
+
+		body {
+			font-family: Arial, sans-serif;
+			margin: 0;
+			padding: 0;
+			background-color: #f4f4f4;
+		}
+	</style>
+</head>
+
+<body>
+	<div class="admin-container">
+		<!-- Сайдбар -->
+		<nav class="admin-sidebar">
+			<ul>
+				<li><a href="#dashboard" class="tab-link active" data-tab="dashboard-content">Дашборд</a></li>
+				<li><a href="#services" class="tab-link" data-tab="services-content">Сервисы</a></li>
+				<li><a href="#users" class="tab-link" data-tab="users-content">Пользователи</a></li>
+				<li><a href="#orders" class="tab-link" data-tab="orders-content">Все записи</a></li>
+			</ul>
+		</nav>
+
+		<!-- Основной контент -->
+		<div class="admin-content">
+			<!-- Дашборд -->
+			<div id="dashboard-content" class="main-tab-content" style="display: block;">
+				<h2>Статистика</h2>
+				<div class="metrics-grid">
+					<div class="metric-card">Новые сервисы: <span id="pending-services">0</span></div>
+					<div class="metric-card">Всего записей: <span id="total-bookings">0</span></div>
+					<div class="metric-card">Всего пользователей: <span id="total-users">0</span></div>
+				</div>
+			</div>
+
+			<!-- Сервисы -->
+			<div id="services-content" class="main-tab-content" style="display: none;">
+				<h2>Управление сервисами</h2>
+				<div id="services-table"></div>
+			</div>
+
+			<!-- Пользователи -->
+			<div id="users-content" class="main-tab-content" style="display: none;">
+				<h2>Пользователи</h2>
+				<div id="users-table"></div>
+			</div>
+
+			<div id="orders-content" class="main-tab-content" style="display: none;">
+				<h2>Записи</h2>
+				<div class="dashboard-container">
+					<nav class="tabs">
+						<div class="tab active" data-tab="pending">Ожидающие</div>
+						<div class="tab" data-tab="confirmed">Подтвержденные</div>
+						<div class="tab" data-tab="canceled">Отмененные</div>
+					</nav>
+
+					<div id="pending" class="tab-content">
+						<h2>Ожидающие записи</h2>
+						<div id="pending-list"></div>
+					</div>
+					<div id="confirmed" class="tab-content">
+						<h2>Подтвержденные записи</h2>
+						<div id="confirmed-list"></div>
+					</div>
+					<div id="canceled" class="tab-content">
+						<h2>Отмененные записи</h2>
+						<div id="canceled-list"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<script src="/static/js/admin.js"></script>
+</body>
+
+</html>
