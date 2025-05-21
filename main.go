@@ -242,7 +242,6 @@ func geocodeAddress(address string) (float64, float64, error) {
 
 // Создание таблиц если не существуют
 func initDB() {
-	// Создание таблицы users
 	_, err := db.Exec(`
 	CREATE TABLE IF NOT EXISTS users (
 		id SERIAL PRIMARY KEY,
@@ -257,8 +256,6 @@ func initDB() {
 	if err != nil {
 		log.Fatal("Error creating users table:", err)
 	}
-
-	// Создание таблицы services с внешним ключом owner_id
 	_, err = db.Exec(`
         CREATE TABLE IF NOT EXISTS services (
             id SERIAL PRIMARY KEY,
@@ -267,7 +264,7 @@ func initDB() {
             phone TEXT NOT NULL,
             logo_path TEXT,
             owner_id INTEGER NOT NULL,
-            FOREIGN KEY (owner_id) REFERENCES users(id),
+            FOREIGN KEY (owner_id) REFERENCES users(id) ON DELETE CASCADE,
 			latitude DECIMAL(10, 7),
 			longitude DECIMAL(10, 7),
 			approved BOOLEAN DEFAULT FALSE,
@@ -279,12 +276,10 @@ func initDB() {
 	if err != nil {
 		log.Fatal("Error creating services table:", err)
 	}
-	// Создание индексов для ускорения поиска
 	_, err = db.Exec("CREATE INDEX IF NOT EXISTS idx_services_owner_id ON services(owner_id)")
 	if err != nil {
 		log.Fatal("Error creating index:", err)
 	}
-	// Создание таблицы admin_logs
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS admin_logs (
 			id SERIAL PRIMARY KEY,
@@ -296,8 +291,6 @@ func initDB() {
 	if err != nil {
 		log.Fatal("Error creating admin_logs table:", err)
 	}
-
-	// Создание таблицы bookings
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS bookings (
 		id SERIAL PRIMARY KEY,
@@ -306,18 +299,11 @@ func initDB() {
 		booking_date TEXT,
 		booking_time TEXT,
 		status TEXT,
-		FOREIGN KEY (partner_id) REFERENCES services(id)
+		FOREIGN KEY (partner_id) REFERENCES services(id) ON DELETE CASCADE
 	);`)
 	if err != nil {
 		log.Fatal("Error creating bookings table:", err)
 	}
-
-	_, err = db.Exec("CREATE INDEX IF NOT EXISTS idx_services_owner_id ON services(owner_id)")
-	if err != nil {
-		log.Fatal("Error creating index:", err)
-	}
-
-	// Создание таблицы offerings
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS offerings (
 			id SERIAL PRIMARY KEY,
@@ -328,8 +314,6 @@ func initDB() {
 	if err != nil {
 		log.Fatal("Error creating offerings table:", err)
 	}
-
-	// Создание таблицы partner_offerings
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS partner_offerings (
 			id SERIAL PRIMARY KEY,
@@ -337,14 +321,13 @@ func initDB() {
 			offering_id INTEGER NOT NULL,
 			price DECIMAL(10, 2) NOT NULL,
 			image_url TEXT,
-			FOREIGN KEY (partner_id) REFERENCES services(id),
+			FOREIGN KEY (partner_id) REFERENCES services(id) ON DELETE CASCADE,
 			FOREIGN KEY (offering_id) REFERENCES offerings(id)
 		)
 	`)
 	if err != nil {
 		log.Fatal("Error creating partner_offerings table:", err)
 	}
-	// Создание таблицы объявлений для партнера
 	_, err = db.Exec(`
     CREATE TABLE IF NOT EXISTS announcements (
         id SERIAL PRIMARY KEY,
@@ -352,7 +335,7 @@ func initDB() {
         title TEXT NOT NULL,
         text TEXT NOT NULL,
         image_url TEXT,
-        FOREIGN KEY (partner_id) REFERENCES services(id)
+        FOREIGN KEY (partner_id) REFERENCES services(id) ON DELETE CASCADE
     )
 `)
 	if err != nil {
