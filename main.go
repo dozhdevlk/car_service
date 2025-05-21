@@ -562,10 +562,10 @@ func registerPartnerHandler(w http.ResponseWriter, r *http.Request) {
 
 	var ownerID int
 	err = db.QueryRow(`
-		INSERT INTO users (name, email, password_hash, role)
-		VALUES ($1, $2, $3, 'admin_service')
+		INSERT INTO users (name, email, phone, password_hash, role)
+		VALUES ($1, $2, $3, $4, 'admin_service')
 		RETURNING id
-	`, r.FormValue("ownerName"), email, string(hashedPassword)).Scan(&ownerID)
+	`, r.FormValue("ownerName"), email, r.FormValue("ownerPhone"), string(hashedPassword)).Scan(&ownerID)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
