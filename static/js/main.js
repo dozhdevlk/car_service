@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', () => {
         ymaps.ready(() => {
             const map = new ymaps.Map('map', {
                 center: [55.796, 49.106], // Москва
-                zoom: 15
+                zoom: 12
             });
 
             const clusterer = new ymaps.Clusterer({
