@@ -244,6 +244,7 @@ func initDB() {
 		id SERIAL PRIMARY KEY,
 		name TEXT NOT NULL,
 		email TEXT UNIQUE NOT NULL,
+		phone TEXT UNIQUE NOT NULL,
 		password_hash TEXT NOT NULL,
 		role TEXT NOT NULL,
 		created_at TIMESTAMP DEFAULT NOW()
@@ -361,6 +362,7 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 	var req struct {
 		Name     string `json:"name"`
 		Email    string `json:"email"`
+		Phone    string `json:"phone"`
 		Password string `json:"password"`
 		Role     string `json:"role"`
 	}
@@ -379,9 +381,9 @@ func registerHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Сохранение пользователя
 	_, err = db.Exec(`
-		INSERT INTO users (name, email, password_hash, role)
-		VALUES ($1, $2, $3, $4)
-	`, req.Name, req.Email, string(hashedPassword), req.Role)
+		INSERT INTO users (name, email, phone, password_hash, role)
+		VALUES ($1, $2, $3, $4, $5)
+	`, req.Name, req.Email, req.Phone, string(hashedPassword), req.Role)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
