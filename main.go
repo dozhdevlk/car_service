@@ -894,6 +894,7 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
         DELETE FROM users WHERE id = $1`,
 		ID)
 
+	fmt.Println(err)
 	if err != nil {
 		http.Error(w, "Ошибка при удалении пользователя", http.StatusInternalServerError)
 		return
