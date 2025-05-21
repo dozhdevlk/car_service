@@ -234,8 +234,8 @@ async function renderServicesTable() {
                             <td>${service.approved ? '✅ Одобрен' : '🔄 На проверке'}</td>
                             <td>
                                 ${!service.approved ? `
-                                    <button class="approve" onclick="approveService(${service.id}, true)">Одобрить</button>
-                                ` : `<button class="approve" onclick="approveService(${service.id}, false)">На проверку</button>`}
+                                    <button class="approve" onclick="approveService(${service.id}, "TRUE")">Одобрить</button>
+                                ` : `<button class="approve" onclick="approveService(${service.id}, "FALSE")">На проверку</button>`}
                             </td>
                         </tr>
                     `).join('')}

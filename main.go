@@ -832,8 +832,8 @@ func adminServicesHandler(w http.ResponseWriter, r *http.Request) {
 
 func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 	var req struct {
-		ServiceID int  `json:"service_id"`
-		Approve   bool `json:"flag"`
+		ServiceID int    `json:"service_id"`
+		Approve   string `json:"flag"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
@@ -841,18 +841,10 @@ func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if req.Approve {
-		_, err := db.Exec("UPDATE services SET approved = TRUE WHERE id = $1", req.ServiceID)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
-	} else {
-		_, err := db.Exec("UPDATE services SET approved = FALSE WHERE id = $1", req.ServiceID)
-		if err != nil {
-			http.Error(w, err.Error(), http.StatusInternalServerError)
-			return
-		}
+	_, err := db.Exec("UPDATE services SET approved = $1 WHERE id = $2", req.Approve, req.ServiceID)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
 	}
 
 	session, _ := store.Get(r, "session")
