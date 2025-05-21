@@ -32,6 +32,7 @@ type User struct {
 	ID           int
 	Name         string
 	Email        string
+	Phone        string
 	PasswordHash string
 	Role         string
 }
@@ -149,6 +150,7 @@ func main() {
 	r.HandleFunc("/api/announcements/{partner_id}/{id}", updateAnnouncementHandler).Methods("PUT")
 	r.HandleFunc("/api/announcements/{partner_id}/{id}", deleteAnnouncementHandler).Methods("DELETE")
 	r.HandleFunc("/api/announcements/{partner_id}/{id}", getAnnouncementHandler).Methods("GET")
+
 	//http.HandleFunc("/api/partner_offerings", managePartnerOfferingsHandler)
 	// r.HandleFunc("/api/partner_offerings", managePartnerOfferingsHandler)
 	// Маршруты для управления услугами
@@ -164,6 +166,7 @@ func main() {
 	r.HandleFunc("/api/admin/services", adminServicesHandler).Methods("GET")
 	r.HandleFunc("/api/admin/approve-service", adminApproveServiceHandler).Methods("POST")
 	r.HandleFunc("/api/admin/users", adminUsersHandler).Methods("GET")
+	r.HandleFunc("/api/admin/delete-user/{id}", deleteUser).Methods("DELETE")
 
 	// Статические файлы
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
@@ -857,7 +860,7 @@ func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, name, email, role FROM users ORDER BY name ASC")
+	rows, err := db.Query("SELECT id, name, email, phone, role FROM users ORDER BY name ASC")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -874,6 +877,7 @@ func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
 		users = append(users, map[string]interface{}{
 			"id":    u.ID,
 			"name":  u.Name,
+			"phone": u.Phone,
 			"email": u.Email,
 			"role":  u.Role,
 		})
@@ -881,6 +885,21 @@ func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(users)
+}
+func deleteUser(w http.ResponseWriter, r *http.Request) {
+	ID := mux.Vars(r)["id"]
+
+	// Удаляем объявление
+	_, err := db.Exec(`
+        DELETE FROM users WHERE id = $1`,
+		ID)
+
+	if err != nil {
+		http.Error(w, "Ошибка при удалении пользователя", http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusNoContent) // Отправляем успешный ответ без содержимого
 }
 
 // API добавленеия услуг

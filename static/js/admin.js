@@ -282,7 +282,9 @@ async function renderUsersTable() {
                         <th>ID</th>
                         <th>Имя</th>
                         <th>Email</th>
+						<th>Телефон</th>
                         <th>Роль</th>
+						<th>Действия</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -291,13 +293,35 @@ async function renderUsersTable() {
                             <td>${user.id}</td>
                             <td>${user.name}</td>
                             <td>${user.email}</td>
+							<td>${user.phone}</td>
                             <td>${user.role}</td>
+							<td>
+                                    <button class="deleteUsr" onclick="deleteUser(${user.id})">Удалить</button>
+                            </td>
                         </tr>
                     `).join('')}
                 </tbody>
             </table>
         `;
 		document.getElementById('users-table').innerHTML = table;
+	} catch (error) {
+		console.error('Error:', error);
+	}
+}
+// удаление пользователя
+async function deleteUser(userId) {
+	try {
+		const response = await fetch(`/api/admin/delete-user/${userId}`, {
+			method: 'DELETE',
+			headers: {
+				'Content-Type': 'application/json'
+			}
+		});
+		if (response.ok) {
+			renderUsersTable();
+		} else {
+			alert('Ошибка при удалении пользователя');
+		}
 	} catch (error) {
 		console.error('Error:', error);
 	}
