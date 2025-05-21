@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		fetch(`/api/announcements/${partnerId}`)
 			.then(response => response.json())
 			.then(announcements => {
-				renderAnnouncements(announcements); // Рендерим услуги
+				renderAnnouncements(announcements);
 			})
 			.catch(error => {
 				console.error('Ошибка загрузки услуг партнера:', error);
@@ -41,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		const announcemensList = document.getElementById('announcemens-list');
 		announcemensList.innerHTML = '';
 
-		announcemensList.forEach(announcement => {
+		announcements.forEach(announcement => {
 			const announcementCard = document.createElement('div');
 			announcementCard.className = 'announcement-card';
 			announcementCard.innerHTML = `
