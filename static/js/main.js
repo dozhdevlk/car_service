@@ -104,7 +104,8 @@ document.addEventListener('DOMContentLoaded', () => {
         const email = document.getElementById('registerEmail').value;
 		const phone = document.getElementById('registerPhone').value;
         const password = document.getElementById('registerPassword').value;
-        const role = document.getElementById('registerRole').value;
+		const role = "client"
+        // const role = document.getElementById('registerRole').value;
 
         try {
             const response = await fetch('/api/register', {
@@ -226,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
         userInfoSection.style.display = 'block';
         userNameSpan.textContent = user.Name;
 
-		// Показываем кнопку "Админ-панель" только для admin
         if (user.Role === 'admin') {
             adminBtn.style.display = 'block';
         } else {
@@ -243,7 +243,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function initMap() {
         ymaps.ready(() => {
             const map = new ymaps.Map('map', {
-                center: [55.796, 49.106], // Москва
+                center: [55.796, 49.106],
                 zoom: 12
             });
 
