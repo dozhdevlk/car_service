@@ -104,6 +104,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			formData.append('servicePhone', document.getElementById('servicePhone').value);
 			formData.append('ownerName', document.getElementById('ownerName').value);
 			formData.append('ownerPhone', document.getElementById('ownerPhone').value);
+			console.log(document.getElementById('servicePhone').value)
 			console.log(document.getElementById('ownerPhone').value)
 			formData.append('ownerEmail', document.getElementById('ownerEmail').value);
 			formData.append('ownerPassword', document.getElementById('ownerPassword').value);
