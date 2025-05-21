@@ -98,7 +98,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			});
 
 			if (!valid) return;
-			console.log(document.getElementById('servicePhone').value);
 			formData.append('serviceName', document.getElementById('serviceName').value);
 			formData.append('serviceAddress', document.getElementById('serviceAddress').value);
 			formData.append('servicePhone', document.getElementById('servicePhone').value);
