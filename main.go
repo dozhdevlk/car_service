@@ -26,7 +26,6 @@ var (
 	db    *sql.DB
 	store = sessions.NewCookieStore([]byte("super-secret-key"))
 )
-
 var apiKey string
 
 type User struct {
@@ -91,6 +90,14 @@ type Announcement struct {
 }
 
 func main() {
+
+	store.Options = &sessions.Options{
+		Path:     "/",
+		HttpOnly: true,                    // Безопасность: cookie будет доступен только через HTTP
+		Secure:   false,                   // Включить, если используется HTTPS
+		SameSite: http.SameSiteStrictMode, // Защита от CSRF атак
+	}
+
 	apiKey = os.Getenv("API_KEY_GEOCODE")
 	// Инициализация БД
 	psqlInfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable", os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_PASSWORD"), os.Getenv("DB_NAME"))
