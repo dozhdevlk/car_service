@@ -1,111 +1,139 @@
 document.addEventListener('DOMContentLoaded', () => {
 	const pathSegments = window.location.pathname.split('/').filter(segment => segment);
-    const partnerId = pathSegments[pathSegments.length - 1];
-    const dateInput = document.getElementById('booking-date');
-    const timeSelect = document.getElementById('booking-time'); // Один список для времени
+	const partnerId = pathSegments[pathSegments.length - 1];
+	const dateInput = document.getElementById('booking-date');
+	const timeSelect = document.getElementById('booking-time'); // Один список для времени
 
-    // Устанавливаем минимальную дату на сегодня
-    const today = new Date();
-    const todayStr = today.toISOString().split('T')[0];
-    dateInput.setAttribute('min', todayStr);
-    dateInput.value = todayStr; // Устанавливаем текущую дату по умолчанию
+	// Устанавливаем минимальную дату на сегодня
+	const today = new Date();
+	const todayStr = today.toISOString().split('T')[0];
+	dateInput.setAttribute('min', todayStr);
+	dateInput.value = todayStr; // Устанавливаем текущую дату по умолчанию
 
 	let workingHours = {}; // Храним рабочие часы партнера
 
+	function fetchPartnerAnnouncements(partnerId) {
+		fetch(`/api/announcements/${partnerId}`)
+			.then(response => response.json())
+			.then(announcements => {
+				renderAnnouncements(announcements); // Рендерим услуги
+			})
+			.catch(error => {
+				console.error('Ошибка загрузки услуг партнера:', error);
+				document.getElementById('services-list').innerHTML = '<p>Не удалось загрузить услуги.</p>';
+			});
+	}
+
 	function fetchPartnerOfferings(partnerId) {
-        fetch(`/api/partner_offerings?partner_id=${partnerId}`)
-            .then(response => response.json())
-            .then(offerings => {
-                renderServices(offerings); // Рендерим услуги
-            })
-            .catch(error => {
-                console.error('Ошибка загрузки услуг партнера:', error);
-                document.getElementById('services-list').innerHTML = '<p>Не удалось загрузить услуги.</p>';
-            });
-    }
+		fetch(`/api/partner_offerings?partner_id=${partnerId}`)
+			.then(response => response.json())
+			.then(offerings => {
+				renderServices(offerings); // Рендерим услуги
+			})
+			.catch(error => {
+				console.error('Ошибка загрузки услуг партнера:', error);
+				document.getElementById('services-list').innerHTML = '<p>Не удалось загрузить услуги.</p>';
+			});
+	}
 
-    // Функция для рендеринга списка услуг
-    function renderServices(offerings) {
-        const searchTerm = document.getElementById('service-search').value.toLowerCase();
-        const servicesList = document.getElementById('services-list');
-        servicesList.innerHTML = '';
+	function renderAnnouncements(announcements) {
 
-        // Фильтрация по поисковому запросу
-        const filteredServices = offerings.filter(service =>
-            service.name.toLowerCase().includes(searchTerm)
-        );
+		const announcemensList = document.getElementById('announcemens-list');
+		announcemensList.innerHTML = '';
 
-        // Отображение услуг
-        filteredServices.forEach(service => {
-            const serviceCard = document.createElement('div');
-            serviceCard.className = 'service-card';
-            serviceCard.innerHTML = `
+		announcemensList.forEach(announcement => {
+			const announcementCard = document.createElement('div');
+			announcementCard.className = 'announcement-card';
+			announcementCard.innerHTML = `
+			<img src=/${announcement.image_url} alt="Объявление ${announcement.id}">
+			<h3>${announcement.title}</h3>
+			<p>${announcement.text}</p>
+			`;
+			announcemensList.appendChild(announcementCard);
+		});
+	}
+	// Функция для рендеринга списка услуг
+	function renderServices(offerings) {
+		const searchTerm = document.getElementById('service-search').value.toLowerCase();
+		const servicesList = document.getElementById('services-list');
+		servicesList.innerHTML = '';
+
+		// Фильтрация по поисковому запросу
+		const filteredServices = offerings.filter(service =>
+			service.name.toLowerCase().includes(searchTerm)
+		);
+
+		// Отображение услуг
+		filteredServices.forEach(service => {
+			const serviceCard = document.createElement('div');
+			serviceCard.className = 'service-card';
+			serviceCard.innerHTML = `
                 <div class="service-details">
                     <h3>${service.name}</h3>
                     <p>Цена: ${service.price.toLocaleString('ru-RU')} руб.</p>
                 </div>
             `;
-            servicesList.appendChild(serviceCard);
-        });
-    }
+			servicesList.appendChild(serviceCard);
+		});
+	}
 
-    // Обработчик поиска
-    document.getElementById('service-search').addEventListener('input', () => {
-        fetchPartnerOfferings(partnerId); // Перезагружаем список с фильтрацией
-    });
+	// Обработчик поиска
+	document.getElementById('service-search').addEventListener('input', () => {
+		fetchPartnerOfferings(partnerId); // Перезагружаем список с фильтрацией
+	});
 
-    // Инициализация загрузки услуг при загрузке страницы
-    fetchPartnerOfferings(partnerId);
+	// Инициализация загрузки услуг при загрузке страницы
+	fetchPartnerOfferings(partnerId);
 
 	// Загружаем данные партнера
-    fetch(`/api/partner/${partnerId}`)
-        .then(response => response.json())
-        .then(data => {
-            workingHours = data.working_hours;
-            // После загрузки данных обновляем доступные часы
-            updateAvailableTimes();
-        })
-        .catch(error => {
-            console.error('Ошибка загрузки данных партнера:', error);
-        });
+	fetch(`/api/partner/${partnerId}`)
+		.then(response => response.json())
+		.then(data => {
+			workingHours = data.working_hours;
+			// После загрузки данных обновляем доступные часы
+			updateAvailableTimes();
+		})
+		.catch(error => {
+			console.error('Ошибка загрузки данных партнера:', error);
+		});
 
 
 	// Обновление доступного времени в зависимости от выбранной даты
-    function updateAvailableTimes() {
-        const selectedDate = dateInput.value;
+	function updateAvailableTimes() {
+		const selectedDate = dateInput.value;
 
-        fetch('/api/available-times', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                partner_id: parseInt(partnerId),
-                booking_date: selectedDate,
-            })
-        })
-        .then(response => response.json())
-        .then(data => {
-            timeSelect.innerHTML = ''; // Очищаем текущие данные в списке
-            const option = document.createElement('option');
-            option.value = '';
-            option.disabled = true;
-            option.selected = true;
-            option.textContent = 'Выберите время';
-            timeSelect.appendChild(option);
+		fetch('/api/available-times', {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+			},
+			body: JSON.stringify({
+				partner_id: parseInt(partnerId),
+				booking_date: selectedDate,
+			})
+		})
+			.then(response => response.json())
+			.then(data => {
+				timeSelect.innerHTML = ''; // Очищаем текущие данные в списке
+				const option = document.createElement('option');
+				option.value = '';
+				option.disabled = true;
+				option.selected = true;
+				option.textContent = 'Выберите время';
+				timeSelect.appendChild(option);
 
-            // Добавляем доступные временные промежутки
-            data.forEach(timeSlot => {
-                const option = document.createElement('option');
-                option.value = timeSlot;
-                option.textContent = timeSlot;
-                timeSelect.appendChild(option);
-            });
-        })
-        .catch(error => {
-            console.error('Ошибка получения доступных слотов:', error);
-        });
-    }
+				// Добавляем доступные временные промежутки
+				data.forEach(timeSlot => {
+					const option = document.createElement('option');
+					option.value = timeSlot;
+					option.textContent = timeSlot;
+					timeSelect.appendChild(option);
+				});
+			})
+			.catch(error => {
+				console.error('Ошибка получения доступных слотов:', error);
+			});
+	}
 
 
 	// Инициализация при загрузке страницы
@@ -221,59 +249,59 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	// Обработка отправки формы записи
-    const bookingForm = document.getElementById('submit-booking');
-    if (bookingForm) {
-        bookingForm.addEventListener('click', () => {
-            const bookingDate = document.getElementById('booking-date').value;
-            const bookingTime = document.getElementById('booking-time').value;
+	const bookingForm = document.getElementById('submit-booking');
+	if (bookingForm) {
+		bookingForm.addEventListener('click', () => {
+			const bookingDate = document.getElementById('booking-date').value;
+			const bookingTime = document.getElementById('booking-time').value;
 
-            // Проверка на заполненность полей
-            if (!bookingDate || !bookingTime) {
-                showBookingMessage('Пожалуйста, выберите дату и время.', 'error');
-                return;
-            }
+			// Проверка на заполненность полей
+			if (!bookingDate || !bookingTime) {
+				showBookingMessage('Пожалуйста, выберите дату и время.', 'error');
+				return;
+			}
 
 
 
-            // Дополнительная проверка: выбранное время не в прошлом
-            const selectedDateTime = new Date(bookingDate);
-            selectedDateTime.setHours(parseInt(bookingTime.split(":")[0]), parseInt(bookingTime.split(":")[1]));
-            const now = new Date();
-            if (selectedDateTime <= now) {
-                showBookingMessage('Нельзя записаться на прошедшее время.', 'error');
-                return;
-            }
+			// Дополнительная проверка: выбранное время не в прошлом
+			const selectedDateTime = new Date(bookingDate);
+			selectedDateTime.setHours(parseInt(bookingTime.split(":")[0]), parseInt(bookingTime.split(":")[1]));
+			const now = new Date();
+			if (selectedDateTime <= now) {
+				showBookingMessage('Нельзя записаться на прошедшее время.', 'error');
+				return;
+			}
 
-            const bookingData = {
-                partner_id: parseInt(partnerId),
-                booking_date: bookingDate,
-                booking_time: bookingTime,
-                status: 'pending'
-            };
+			const bookingData = {
+				partner_id: parseInt(partnerId),
+				booking_date: bookingDate,
+				booking_time: bookingTime,
+				status: 'pending'
+			};
 
-            fetch('/api/bookings', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(bookingData),
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.error) {
-                    showBookingMessage(data.error, 'error');
-                } else {
-                    showBookingMessage('Запись успешно создана! Ожидайте подтверждения.', 'success');
-                    document.getElementById('booking-form').reset();
-                    loadBookings();
-                }
-            })
-            .catch(error => {
-                console.error('Ошибка отправки записи:', error);
-                showBookingMessage('Не удалось создать запись. Попробуйте снова.', 'error');
-            });
-        });
-    }
+			fetch('/api/bookings', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(bookingData),
+			})
+				.then(response => response.json())
+				.then(data => {
+					if (data.error) {
+						showBookingMessage(data.error, 'error');
+					} else {
+						showBookingMessage('Запись успешно создана! Ожидайте подтверждения.', 'success');
+						document.getElementById('booking-form').reset();
+						loadBookings();
+					}
+				})
+				.catch(error => {
+					console.error('Ошибка отправки записи:', error);
+					showBookingMessage('Не удалось создать запись. Попробуйте снова.', 'error');
+				});
+		});
+	}
 
 	// Функции для отображения сообщений
 	function showBookingMessage(message, type) {
@@ -292,7 +320,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		setTimeout(() => { messageElement.style.display = 'none'; }, 5000);
 	}
 
-	
+
 
 });
 
