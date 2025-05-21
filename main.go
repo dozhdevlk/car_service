@@ -841,7 +841,7 @@ func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE services SET approved = TRUE WHERE id = $2", req.ServiceID)
+	_, err := db.Exec("UPDATE services SET approved = TRUE WHERE id = $1", req.ServiceID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -869,7 +869,7 @@ func adminDisApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE services SET approved = FALSE WHERE id = $2", req.ServiceID)
+	_, err := db.Exec("UPDATE services SET approved = FALSE WHERE id = $1", req.ServiceID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
