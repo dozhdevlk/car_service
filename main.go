@@ -860,7 +860,7 @@ func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, name, email, phone, role FROM users ORDER BY name ASC")
+	rows, err := db.Query("SELECT id, name, email, phone, role FROM users ORDER BY id ASC")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -870,7 +870,7 @@ func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
 	var users []map[string]interface{}
 	for rows.Next() {
 		var u User
-		err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Role)
+		err := rows.Scan(&u.ID, &u.Name, &u.Email, &u.Phone, &u.Role)
 		if err != nil {
 			continue
 		}
