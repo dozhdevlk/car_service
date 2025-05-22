@@ -1268,11 +1268,6 @@ func updateBookingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if updateData.Status != "confirmed" && updateData.Status != "canceled" {
-		http.Error(w, "Неверный статус", http.StatusBadRequest)
-		return
-	}
-
 	result, err := db.Exec("UPDATE bookings SET status = $1 WHERE id = $2", updateData.Status, id)
 	if err != nil {
 		http.Error(w, "Не удалось обновить запись", http.StatusInternalServerError)

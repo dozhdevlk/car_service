@@ -407,23 +407,30 @@ async function deleteUser(userId) {
 
 
 // Функция для обновления статуса записи (должна быть определена)
-async function updateBookingStatus(bookingId, status) {
-	try {
-		const response = await fetch('/api/update-booking', {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json'
-			},
-			body: JSON.stringify({ id: bookingId, status: status })
+function updateBookingStatus(bookingId, status) {
+	fetch(`/api/bookings/${bookingId}`, {
+		method: 'PUT',
+		headers: {
+			'Content-Type': 'application/json',
+		},
+		body: JSON.stringify({ status }),
+	})
+		.then(response => response.json())
+		.then(data => {
+			if (data.error) {
+				alert(data.error);
+			} else {
+				alert(`Запись успешно ${status === 'confirmed' ? 'подтверждена' : 'отменена'}!`);
+				// Перезагружаем записи, извлекая partnerId из URL
+				const pathSegments = window.location.pathname.split('/').filter(segment => segment);
+				const partnerId = pathSegments[pathSegments.length - 1];
+				loadBookings(partnerId);
+			}
+		})
+		.catch(error => {
+			console.error('Ошибка обновления статуса:', error);
+			alert('Не удалось обновить статус записи.');
 		});
-		if (response.ok) {
-			loadBookings(); // Перезагружаем записи после обновления
-		} else {
-			alert('Ошибка при обновлении статуса записи');
-		}
-	} catch (error) {
-		console.error('Error:', error);
-	}
 }
 
 // Активация первой вкладки заказов
