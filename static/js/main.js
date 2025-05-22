@@ -242,7 +242,7 @@ document.addEventListener('DOMContentLoaded', () => {
 		} else {
             controlBtn.style.display = 'none';
         }
-		if (user.Role === 'admin_service') {
+		if (user.Role === 'client') {
 			lkBtn.style.display = 'block';
 		} else {
 			lkBtn.style.display = 'none';
