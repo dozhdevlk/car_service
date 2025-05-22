@@ -1190,7 +1190,7 @@ func getBookingsHandlerClientID(w http.ResponseWriter, r *http.Request) {
     			FROM bookings b
     			JOIN users u ON b.user_id = u.id
     			JOIN services s ON b.partner_id = s.id
-				WHERE b.user_id = $1"
+				WHERE b.user_id = $1
 		`, userID)
 	fmt.Println(err)
 	if err != nil {
@@ -1235,7 +1235,7 @@ func getBookingsHandlerID(w http.ResponseWriter, r *http.Request) {
     			FROM bookings b
     			JOIN users u ON b.user_id = u.id
     			JOIN services s ON b.partner_id = s.id
-				WHERE b.partner_id = $1"
+				WHERE b.partner_id = $1
 		`, id)
 	if err != nil {
 		http.Error(w, "Не удалось загрузить записи", http.StatusInternalServerError)
