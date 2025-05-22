@@ -35,22 +35,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	const tabs = document.querySelectorAll('.tab');
 	tabs.forEach(tab => {
 		tab.addEventListener('click', () => {
-			// Удаляем класс active у всех вкладок и содержимого внутри orders-content
 			tabs.forEach(t => t.classList.remove('active'));
 			document.querySelectorAll('#orders-content .tab-content').forEach(content => {
 				content.classList.remove('active');
 				content.style.display = 'none';
 			});
 
-			// Активируем выбранную вкладку и её содержимое
 			tab.classList.add('active');
 			const tabId = tab.getAttribute('data-tab');
 			const tabContent = document.getElementById(tabId);
-			if (tabContent) {
-				tabContent.classList.add('active');
-				tabContent.style.display = 'block';
-			}
-			console.log(`Активирована вкладка заказов: ${tabId}, видимость: ${tabContent ? tabContent.style.display : 'не найдена'}`);
+			tabContent.classList.add('active');
+			tabContent.style.display = 'block';
 
 			// Перезагружаем записи при переключении внутренних вкладок
 			if (['pending', 'confirmed', 'canceled', 'working', 'end'].includes(tabId)) {
