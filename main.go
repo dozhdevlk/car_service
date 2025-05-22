@@ -901,7 +901,6 @@ func deleteUser(w http.ResponseWriter, r *http.Request) {
         DELETE FROM users WHERE id = $1`,
 		ID)
 
-	fmt.Println(err)
 	if err != nil {
 		http.Error(w, "Ошибка при удалении пользователя", http.StatusInternalServerError)
 		return
@@ -1176,23 +1175,24 @@ func getBookingsHandlerClientID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rows, err := db.Query(`
-    SELECT 
-        b.id, 
-        b.partner_id, 
-        b.user_id, 
-        b.booking_date, 
-        b.booking_time, 
-        b.status, 
-        u.name AS user_name, 
-        u.email AS user_email,
-        s.name AS partner_name,
-        s.address AS partner_address,
-		s.phone AS partner_phone
-    FROM bookings b
-    JOIN users u ON b.user_id = u.id
-    JOIN services s ON b.partner_id = s.id
-	WHERE b.user_id = $1"
-`, userID)
+    			SELECT 
+    			    b.id, 
+    			    b.partner_id, 
+    			    b.user_id, 
+    			    b.booking_date, 
+    			    b.booking_time, 
+    			    b.status, 
+    			    u.name AS user_name, 
+    			    u.email AS user_email,
+    			    s.name AS partner_name,
+    			    s.address AS partner_address,
+					s.phone AS partner_phone
+    			FROM bookings b
+    			JOIN users u ON b.user_id = u.id
+    			JOIN services s ON b.partner_id = s.id
+				WHERE b.user_id = $1"
+		`, userID)
+	fmt.Println(err)
 	if err != nil {
 		http.Error(w, "Не удалось загрузить записи", http.StatusInternalServerError)
 		return
@@ -1220,23 +1220,23 @@ func getBookingsHandlerID(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	rows, err := db.Query(`
-    SELECT 
-        b.id, 
-        b.partner_id, 
-        b.user_id, 
-        b.booking_date, 
-        b.booking_time, 
-        b.status, 
-        u.name AS user_name, 
-        u.email AS user_email,
-        s.name AS partner_name,
-        s.address AS partner_address,
-		s.phone AS partner_phone
-    FROM bookings b
-    JOIN users u ON b.user_id = u.id
-    JOIN services s ON b.partner_id = s.id
-	WHERE b.partner_id = $1"
-`, id)
+    			SELECT 
+    			    b.id, 
+    			    b.partner_id, 
+    			    b.user_id, 
+    			    b.booking_date, 
+    			    b.booking_time, 
+    			    b.status, 
+    			    u.name AS user_name, 
+    			    u.email AS user_email,
+    			    s.name AS partner_name,
+    			    s.address AS partner_address,
+					s.phone AS partner_phone
+    			FROM bookings b
+    			JOIN users u ON b.user_id = u.id
+    			JOIN services s ON b.partner_id = s.id
+				WHERE b.partner_id = $1"
+		`, id)
 	if err != nil {
 		http.Error(w, "Не удалось загрузить записи", http.StatusInternalServerError)
 		return
@@ -1615,9 +1615,6 @@ func getAvailableTimeSlots(bookingDate string, partnerID int, occupiedSlots []st
 		startTime := times["from"] // "08:00"
 		endTime := times["to"]     // "17:00"
 
-		fmt.Println(startTime)
-		fmt.Println(endTime)
-
 		if startTime == endTime && startTime == "00:00" {
 			return timeSlots
 		}
@@ -1712,7 +1709,6 @@ func getAnnouncementHandler(w http.ResponseWriter, r *http.Request) {
 	defer rows.Close()
 	var ann Announcement
 	if err := rows.Scan(&ann.ID, &ann.Title, &ann.Text, &ann.ImageURL); err != nil {
-		fmt.Println(err)
 		http.Error(w, "Ошибка при получении данных", http.StatusInternalServerError)
 		return
 	}
@@ -1748,8 +1744,6 @@ func getAnnouncementsHandler(w http.ResponseWriter, r *http.Request) {
 
 // Создание нового объявления
 func createAnnouncementHandler(w http.ResponseWriter, r *http.Request) {
-
-	fmt.Println(r.FormValue("partner_id"), r.FormValue("title"), r.FormValue("text"))
 	var ann Announcement
 	var logoPath string
 	file, handler, err := r.FormFile("image_url")
@@ -1763,7 +1757,6 @@ func createAnnouncementHandler(w http.ResponseWriter, r *http.Request) {
 		// Генерируем уникальное имя файла
 		logoPath = "uploads/" + uuid.New().String() + filepath.Ext(handler.Filename)
 		f, err := os.Create(logoPath)
-		fmt.Println(err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
@@ -1814,7 +1807,6 @@ func updateAnnouncementHandler(w http.ResponseWriter, r *http.Request) {
 		// Генерируем уникальное имя файла
 		logoPath = "uploads/" + uuid.New().String() + filepath.Ext(handler.Filename)
 		f, err := os.Create(logoPath)
-		fmt.Println(err)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusInternalServerError)
 			return
