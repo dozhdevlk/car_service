@@ -47,12 +47,18 @@ type Service struct {
 }
 
 type Booking struct {
-	ID          int    `json:"id"`
-	PartnerID   int    `json:"partner_id"`
-	UserID      int    `json:"user_id"`
-	BookingDate string `json:"booking_date"`
-	BookingTime string `json:"booking_time"`
-	Status      string `json:"status"`
+	ID             int    `json:"id"`
+	PartnerID      int    `json:"partner_id"`
+	PartnerName    string `json:"partner_name"`
+	PartnerPhone   string `json:"partner_phone"`
+	PartnerAddress string `json:"partner_address"`
+	UserID         int    `json:"user_id"`
+	UserName       string `json:"user_name"`
+	UserPhone      string `json:"user_phone"`
+	UserEmail      string `json:"user_email"`
+	BookingDate    string `json:"booking_date"`
+	BookingTime    string `json:"booking_time"`
+	Status         string `json:"status"`
 }
 
 type Offering struct {
@@ -126,7 +132,7 @@ func main() {
 	r.HandleFunc("/admin", pageAdminHandler)
 	r.HandleFunc("/partner/{id}", pagePartnerHandler)
 	r.HandleFunc("/dashboard/{id}", dashboardHandler)
-	r.HandleFunc("/client/{id}", clientHandler)
+	r.HandleFunc("/client", clientHandler)
 
 	// API endpoints
 	r.HandleFunc("/api/register", registerHandler).Methods("POST")
@@ -1122,7 +1128,23 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(booking)
 }
 func getBookingsHandler(w http.ResponseWriter, r *http.Request) {
-	rows, err := db.Query("SELECT id, partner_id, user_id, booking_date, booking_time, status FROM bookings")
+	rows, err := db.Query(`
+    SELECT 
+        b.id, 
+        b.partner_id, 
+        b.user_id, 
+        b.booking_date, 
+        b.booking_time, 
+        b.status, 
+        u.name AS user_name, 
+        u.email AS user_email,
+        s.name AS partner_name,
+        s.address AS partner_address,
+		s.phone AS partner_phone
+    FROM bookings b
+    JOIN users u ON b.user_id = u.id
+    JOIN services s ON b.partner_id = s.id
+`)
 	if err != nil {
 		http.Error(w, "Не удалось загрузить записи", http.StatusInternalServerError)
 		return
@@ -1132,7 +1154,7 @@ func getBookingsHandler(w http.ResponseWriter, r *http.Request) {
 	var bookings []Booking
 	for rows.Next() {
 		var booking Booking
-		if err := rows.Scan(&booking.ID, &booking.PartnerID, &booking.UserID, &booking.BookingDate, &booking.BookingTime, &booking.Status); err != nil {
+		if err := rows.Scan(&booking.ID, &booking.PartnerID, &booking.UserID, &booking.BookingDate, &booking.BookingTime, &booking.Status, &booking.UserName, &booking.UserEmail, &booking.PartnerName, &booking.PartnerAddress, &booking.PartnerPhone); err != nil {
 			http.Error(w, "Ошибка чтения записи", http.StatusInternalServerError)
 			return
 		}
@@ -1153,7 +1175,24 @@ func getBookingsHandlerClientID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Пользователь не авторизован", http.StatusUnauthorized)
 		return
 	}
-	rows, err := db.Query("SELECT id, partner_id, user_id, booking_date, booking_time, status FROM bookings WHERE user_id = $1", userID)
+	rows, err := db.Query(`
+    SELECT 
+        b.id, 
+        b.partner_id, 
+        b.user_id, 
+        b.booking_date, 
+        b.booking_time, 
+        b.status, 
+        u.name AS user_name, 
+        u.email AS user_email,
+        s.name AS partner_name,
+        s.address AS partner_address,
+		s.phone AS partner_phone
+    FROM bookings b
+    JOIN users u ON b.user_id = u.id
+    JOIN services s ON b.partner_id = s.id
+	WHERE b.user_id = $1"
+`, userID)
 	if err != nil {
 		http.Error(w, "Не удалось загрузить записи", http.StatusInternalServerError)
 		return
@@ -1162,7 +1201,7 @@ func getBookingsHandlerClientID(w http.ResponseWriter, r *http.Request) {
 	var bookings []Booking
 	for rows.Next() {
 		var booking Booking
-		if err := rows.Scan(&booking.ID, &booking.PartnerID, &booking.UserID, &booking.BookingDate, &booking.BookingTime, &booking.Status); err != nil {
+		if err := rows.Scan(&booking.ID, &booking.PartnerID, &booking.UserID, &booking.BookingDate, &booking.BookingTime, &booking.Status, &booking.UserName, &booking.UserEmail, &booking.PartnerName, &booking.PartnerAddress, &booking.PartnerPhone); err != nil {
 			http.Error(w, "Ошибка чтения записи", http.StatusInternalServerError)
 			return
 		}
@@ -1180,7 +1219,24 @@ func getBookingsHandlerID(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Invalid partner ID", http.StatusBadRequest)
 		return
 	}
-	rows, err := db.Query("SELECT id, partner_id, user_id, booking_date, booking_time, status FROM bookings WHERE partner_id = $1", id)
+	rows, err := db.Query(`
+    SELECT 
+        b.id, 
+        b.partner_id, 
+        b.user_id, 
+        b.booking_date, 
+        b.booking_time, 
+        b.status, 
+        u.name AS user_name, 
+        u.email AS user_email,
+        s.name AS partner_name,
+        s.address AS partner_address,
+		s.phone AS partner_phone
+    FROM bookings b
+    JOIN users u ON b.user_id = u.id
+    JOIN services s ON b.partner_id = s.id
+	WHERE b.partner_id = $1"
+`, id)
 	if err != nil {
 		http.Error(w, "Не удалось загрузить записи", http.StatusInternalServerError)
 		return
@@ -1190,7 +1246,7 @@ func getBookingsHandlerID(w http.ResponseWriter, r *http.Request) {
 	var bookings []Booking
 	for rows.Next() {
 		var booking Booking
-		if err := rows.Scan(&booking.ID, &booking.PartnerID, &booking.UserID, &booking.BookingDate, &booking.BookingTime, &booking.Status); err != nil {
+		if err := rows.Scan(&booking.ID, &booking.PartnerID, &booking.UserID, &booking.BookingDate, &booking.BookingTime, &booking.Status, &booking.UserName, &booking.UserEmail, &booking.PartnerName, &booking.PartnerAddress, &booking.PartnerPhone); err != nil {
 			http.Error(w, "Ошибка чтения записи", http.StatusInternalServerError)
 			return
 		}
