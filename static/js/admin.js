@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			console.log(`Активирована вкладка заказов: ${tabId}, видимость: ${tabContent ? tabContent.style.display : 'не найдена'}`);
 
 			// Перезагружаем записи при переключении внутренних вкладок
-			if (['pending', 'confirmed', 'canceled'].includes(tabId)) {
+			if (['pending', 'confirmed', 'canceled', 'working', 'end'].includes(tabId)) {
 				loadBookings();
 			}
 		});

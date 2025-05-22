@@ -191,7 +191,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			tabContent.style.display = 'block';
 
 			// Перезагружаем записи при переключении вкладок заказов
-			if (['pending', 'confirmed', 'canceled'].includes(tabId)) {
+			if (['pending', 'confirmed', 'canceled', 'working', 'end'].includes(tabId)) {
 				setTimeout(() => {
 					loadBookings(partnerId);
 				}, 0);
