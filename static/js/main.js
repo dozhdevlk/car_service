@@ -154,6 +154,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
     });
 
+	lkBtn.addEventListener('click', () => {
+        window.location.href = '/client';
+    });
+
 
 
     // Кнопка "Стать партнером"
