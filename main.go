@@ -120,13 +120,13 @@ func main() {
 
 	// Роутер
 	r := mux.NewRouter()
-
 	// HTML страницы
 	r.HandleFunc("/", homeHandler)
 	r.HandleFunc("/partner-register.html", pagePartnerRegisterHandler)
 	r.HandleFunc("/admin", pageAdminHandler)
 	r.HandleFunc("/partner/{id}", pagePartnerHandler)
 	r.HandleFunc("/dashboard/{id}", dashboardHandler)
+	r.HandleFunc("/client/{id}", clientHandler)
 
 	// API endpoints
 	r.HandleFunc("/api/register", registerHandler).Methods("POST")
@@ -139,28 +139,19 @@ func main() {
 	r.HandleFunc("/api/partner/{id}", partnerDetailsHandler).Methods("GET", "PUT")
 	r.HandleFunc("/api/bookings", createBookingHandler).Methods("POST")
 	r.HandleFunc("/api/bookings", getBookingsHandler).Methods("GET")
+	r.HandleFunc("/api/bookings-client", getBookingsHandlerClientID).Methods("GET")
 	r.HandleFunc("/api/bookings/{id}", getBookingsHandlerID).Methods("GET")
 	r.HandleFunc("/api/bookings/{id}", updateBookingHandler).Methods("PUT")
 	r.HandleFunc("/api/available-times", getAvailableTimeSlotsHandler).Methods("POST")
-
-	//r.HandleFunc("/api/get-yandex-maps-api", getAPI).Methods("GET")
-
 	r.HandleFunc("/api/announcements/{partner_id}", getAnnouncementsHandler).Methods("GET")
 	r.HandleFunc("/api/announcements", createAnnouncementHandler).Methods("POST")
 	r.HandleFunc("/api/announcements/{partner_id}/{id}", updateAnnouncementHandler).Methods("PUT")
 	r.HandleFunc("/api/announcements/{partner_id}/{id}", deleteAnnouncementHandler).Methods("DELETE")
 	r.HandleFunc("/api/announcements/{partner_id}/{id}", getAnnouncementHandler).Methods("GET")
-
-	//http.HandleFunc("/api/partner_offerings", managePartnerOfferingsHandler)
-	// r.HandleFunc("/api/partner_offerings", managePartnerOfferingsHandler)
 	// Маршруты для управления услугами
 	r.HandleFunc("/api/partner_offerings", managePartnerOfferingsHandler).Methods("GET", "POST")
 	r.HandleFunc("/api/partner_offerings/{id}", managePartnerOfferingsHandler).Methods("PUT", "DELETE")
-
-	// Новые эндпоинты для услуг
 	r.HandleFunc("/api/offerings", getOfferingsHandler).Methods("GET")
-	//r.HandleFunc("/api/partner_offerings", createPartnerOfferingHandler).Methods("POST")
-
 	// Админ API
 	r.HandleFunc("/api/admin/stats", adminStatsHandler).Methods("GET")
 	r.HandleFunc("/api/admin/services", adminServicesHandler).Methods("GET")
@@ -168,7 +159,6 @@ func main() {
 	r.HandleFunc("/api/admin/disapprove-service", adminDisApproveServiceHandler).Methods("POST")
 	r.HandleFunc("/api/admin/users", adminUsersHandler).Methods("GET")
 	r.HandleFunc("/api/admin/delete-user/{id}", deleteUser).Methods("DELETE")
-
 	// Статические файлы
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	r.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
@@ -470,7 +460,7 @@ func partnersHandler(w http.ResponseWriter, r *http.Request) {
 
 		err := rows.Scan(&id, &name, &address, &phone, &logoPath, &latitude, &longitude, &owner)
 		if err != nil {
-			continue // Пропускаем ошибки
+			continue
 		}
 
 		partner := map[string]interface{}{
@@ -1152,7 +1142,37 @@ func getBookingsHandler(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(bookings)
 }
+func getBookingsHandlerClientID(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		http.Error(w, "Ошибка получения сессии", http.StatusInternalServerError)
+		return
+	}
+	userID, ok := session.Values["user_id"].(int)
+	if !ok {
+		http.Error(w, "Пользователь не авторизован", http.StatusUnauthorized)
+		return
+	}
+	rows, err := db.Query("SELECT id, partner_id, user_id, booking_date, booking_time, status FROM bookings WHERE user_id = $1", userID)
+	if err != nil {
+		http.Error(w, "Не удалось загрузить записи", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+	var bookings []Booking
+	for rows.Next() {
+		var booking Booking
+		if err := rows.Scan(&booking.ID, &booking.PartnerID, &booking.UserID, &booking.BookingDate, &booking.BookingTime, &booking.Status); err != nil {
+			http.Error(w, "Ошибка чтения записи", http.StatusInternalServerError)
+			return
+		}
+		bookings = append(bookings, booking)
+	}
 
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(bookings)
+
+}
 func getBookingsHandlerID(w http.ResponseWriter, r *http.Request) {
 	vars := mux.Vars(r)
 	id, err := strconv.Atoi(vars["id"])
@@ -1772,11 +1792,6 @@ func updateAnnouncementHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(ann)
 }
 
-// func getAPI(w http.ResponseWriter, r *http.Request) {
-// 	API := os.Getenv("API_KEY_YANDEX_MAPS")
-// 	json.NewEncoder(w).Encode(API)
-// }
-
 // Удаление объявления
 func deleteAnnouncementHandler(w http.ResponseWriter, r *http.Request) {
 	partnerID := mux.Vars(r)["partner_id"]
@@ -1887,6 +1902,14 @@ func dashboardHandler(w http.ResponseWriter, r *http.Request) {
 	// 	return
 	// }
 	tmpl, err := template.ParseFiles("templates/dashboard.html")
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		return
+	}
+	tmpl.Execute(w, nil)
+}
+func clientHandler(w http.ResponseWriter, r *http.Request) {
+	tmpl, err := template.ParseFiles("templates/client.html")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
