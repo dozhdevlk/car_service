@@ -111,8 +111,47 @@
 
 	<script>
 		const pathSegments = window.location.pathname.split('/').filter(segment => segment);
-		userId = parseInt(pathSegments[pathSegments.length - 1]);
+		const tabs = document.querySelectorAll('.tab');
+		tabs.forEach(tab => {
+			tab.addEventListener('click', () => {
+				tabs.forEach(t => t.classList.remove('active'));
+				document.querySelectorAll('.order-tab-content').forEach(content => {
+					content.classList.remove('active');
+					content.style.display = 'none'; 
+				});
+
+				tab.classList.add('active');
+				const tabId = tab.getAttribute('data-tab');
+				const tabContent = document.getElementById(tabId);
+				tabContent.classList.add('active');
+				tabContent.style.display = 'block';
+
+				// Перезагружаем записи при переключении вкладок заказов
+				if (['pending', 'confirmed', 'canceled', 'working'].includes(tabId)) {
+					setTimeout(() => {
+						loadBookings();
+					}, 0);
+				}
+			});
+		});
+		
 		loadBookings()
+		loadUserInfo()
+
+		function loadUserInfo() {
+			fetch(`/api/user`)
+				.then(response => {
+					if (!response.ok) {
+						throw new Error (`HTTP error! status: ${response.status}`);
+					}
+					return response.json();
+				})
+				.then(userInfo => {
+					document.getElementById('client-name').textContent = userInfo.Name;
+					document.getElementById('client-phone').textContent = userInfo.Phone;
+					document.getElementById('client-email').textContent = userInfo.Email;
+				})
+		}
 		function loadBookings() {
 			fetch(`/api/bookings-client`)
 				.then(response => {
@@ -126,7 +165,7 @@
 					const confirmedList = document.getElementById('confirmed-list');
 					const canceledList = document.getElementById('canceled-list');
 					const workingList = document.getElementById('working-list');
-					
+
 
 
 					if (!pendingList || !confirmedList || !canceledList || !workingList) {
@@ -158,10 +197,6 @@
                             <p><strong>Дата:</strong> ${booking.booking_date}</p>
                             <p><strong>Время:</strong> ${booking.booking_time}</p>
                             <p><strong>Статус:</strong> ${booking.status}</p>
-                        </div>
-                        <div class="booking-actions">
-                            <button onclick="updateBookingStatus(${booking.id}, 'confirmed')">Подтвердить</button>
-                            <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
                         </div>
                     `;
 							pendingList.appendChild(bookingCard);

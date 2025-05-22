@@ -424,10 +424,10 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 
 	var user User
 	err := db.QueryRow(`
-		SELECT id, name, email, role
+		SELECT id, name, email, phone, role
 		FROM users
 		WHERE id = $1
-	`, userID).Scan(&user.ID, &user.Name, &user.Email, &user.Role)
+	`, userID).Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.Role)
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
