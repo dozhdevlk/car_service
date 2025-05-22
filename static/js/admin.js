@@ -219,7 +219,7 @@ function loadBookings() {
 						<p><strong>Статус:</strong> ${booking.status}</p>
 					</div>
 			`;
-					workingList.appendChild(bookingCard);
+					endList.appendChild(bookingCard);
 				});
 			}
 
@@ -420,7 +420,7 @@ function updateBookingStatus(bookingId, status) {
 			if (data.error) {
 				alert(data.error);
 			} else {
-				alert(`Запись успешно ${status === 'confirmed' ? 'подтверждена' : 'отменена'}!`);
+				alert(`Запись успешно обновлена`);
 				// Перезагружаем записи, извлекая partnerId из URL
 				const pathSegments = window.location.pathname.split('/').filter(segment => segment);
 				const partnerId = pathSegments[pathSegments.length - 1];

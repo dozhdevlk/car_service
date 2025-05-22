@@ -204,10 +204,6 @@
 							<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
 							<p><strong>Статус:</strong> ${booking.status}</p>
 						</div>
-                        <div class="booking-actions">
-                            <button onclick="updateBookingStatus(${booking.id}, 'confirmed')">Подтвердить</button>
-                            <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
-                        </div>
                     `;
 							pendingList.appendChild(bookingCard);
 						});
@@ -231,11 +227,6 @@
 						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
 						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
 						<p><strong>Статус:</strong> ${booking.status}</p>
-					</div>
-					<div class="booking-actions">
-                        <button onclick="updateBookingStatus(${booking.id}, 'working')">Отправить в работу</button>
-                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
-                    </div>
                     `;
 							confirmedList.appendChild(bookingCard);
 						});
@@ -283,10 +274,6 @@
 						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
 						<p><strong>Статус:</strong> ${booking.status}</p>
 					</div>
-					<div class="booking-actions">
-                        <button onclick="updateBookingStatus(${booking.id}, 'end')">Завершить</button>
-                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
-                    </div>
 			`;
 							workingList.appendChild(bookingCard);
 						});
@@ -311,7 +298,7 @@
 						<p><strong>Статус:</strong> ${booking.status}</p>
 					</div>
 			`;
-							workingList.appendChild(bookingCard);
+							endList.appendChild(bookingCard);
 						});
 					}
 					// Дополнительная проверка видимости после рендеринга
