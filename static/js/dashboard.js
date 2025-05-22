@@ -48,9 +48,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			title: document.getElementById('announcementTitle').value,
 			text: document.getElementById('announcementText').value,
 			image_url: document.getElementById('announcementImage').value
-		  };
-		  
-		  console.log(data);  // Проверьте, что выводится в консоль
+		};
+
+		console.log(data);  // Проверьте, что выводится в консоль
 
 		let url = '/api/announcements';
 		let method = 'POST';
@@ -367,19 +367,21 @@ function loadBookings(partnerId) {
 			const pendingList = document.getElementById('pending-list');
 			const confirmedList = document.getElementById('confirmed-list');
 			const canceledList = document.getElementById('canceled-list');
-
-			if (!pendingList || !confirmedList || !canceledList) {
-				console.error('Один или несколько элементов списка не найдены:', { pendingList, confirmedList, canceledList });
-				return;
-			}
+			const workingList = document.getElementById('working-list');
+			const endList = document.getElementById('end-list');
 
 			pendingList.innerHTML = '';
 			confirmedList.innerHTML = '';
 			canceledList.innerHTML = '';
+			workingList.innerHTML = '';
+			endList.innerHTML = '';
 
 			const pendingBookings = bookings.filter(booking => booking.status === 'pending');
 			const confirmedBookings = bookings.filter(booking => booking.status === 'confirmed');
 			const canceledBookings = bookings.filter(booking => booking.status === 'canceled');
+			const workingBookings = bookings.filter(booking => booking.status === 'working')
+			const endBookings = bookings.filter(booking => booking.status === 'end')
+
 
 			if (pendingBookings.length === 0) {
 				pendingList.innerHTML = '<p>Записей нет.</p>';
@@ -388,14 +390,18 @@ function loadBookings(partnerId) {
 					const bookingCard = document.createElement('div');
 					bookingCard.className = 'booking-card';
 					bookingCard.innerHTML = `
-                        <div class="booking-info">
-                            <p><strong>ID:</strong> ${booking.id}</p>
-                            <p><strong>ID партнера:</strong> ${booking.partner_id}</p>
-                            <p><strong>ID пользователя:</strong> ${booking.user_id}</p>
-                            <p><strong>Дата:</strong> ${booking.booking_date}</p>
-                            <p><strong>Время:</strong> ${booking.booking_time}</p>
-                            <p><strong>Статус:</strong> ${booking.status}</p>
-                        </div>
+						<div class="booking-info">
+							<p><strong>ID записи:</strong> ${booking.id}</p>
+							<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+							<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+							<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+							<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+							<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+							<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+							<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+							<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+							<p><strong>Статус:</strong> ${booking.status}</p>
+						</div>
                         <div class="booking-actions">
                             <button onclick="updateBookingStatus(${booking.id}, 'confirmed')">Подтвердить</button>
                             <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
@@ -412,14 +418,22 @@ function loadBookings(partnerId) {
 					const bookingCard = document.createElement('div');
 					bookingCard.className = 'booking-card';
 					bookingCard.innerHTML = `
-                        <div class="booking-info">
-                            <p><strong>ID:</strong> ${booking.id}</p>
-                            <p><strong>ID партнера:</strong> ${booking.partner_id}</p>
-                            <p><strong>ID пользователя:</strong> ${booking.user_id}</p>
-                            <p><strong>Дата:</strong> ${booking.booking_date}</p>
-                            <p><strong>Время:</strong> ${booking.booking_time}</p>
-                            <p><strong>Статус:</strong> ${booking.status}</p>
-                        </div>
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
+					<div class="booking-actions">
+                        <button onclick="updateBookingStatus(${booking.id}, 'working')">Отправить в работу</button>
+                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
+                    </div>
                     `;
 					confirmedList.appendChild(bookingCard);
 				});
@@ -432,16 +446,70 @@ function loadBookings(partnerId) {
 					const bookingCard = document.createElement('div');
 					bookingCard.className = 'booking-card';
 					bookingCard.innerHTML = `
-                        <div class="booking-info">
-                            <p><strong>ID:</strong> ${booking.id}</p>
-                            <p><strong>ID партнера:</strong> ${booking.partner_id}</p>
-                            <p><strong>ID пользователя:</strong> ${booking.user_id}</p>
-                            <p><strong>Дата:</strong> ${booking.booking_date}</p>
-                            <p><strong>Время:</strong> ${booking.booking_time}</p>
-                            <p><strong>Статус:</strong> ${booking.status}</p>
-                        </div>
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
                     `;
 					canceledList.appendChild(bookingCard);
+				});
+			}
+			if (workingBookings.length === 0) {
+				workingList.innerHTML = '<p>Записей нет.</p>';
+			} else {
+				workingBookings.forEach(booking => {
+					const bookingCard = document.createElement('div');
+					bookingCard.className = 'booking-card';
+					bookingCard.innerHTML = `
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
+					<div class="booking-actions">
+                        <button onclick="updateBookingStatus(${booking.id}, 'end')">Завершить</button>
+                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
+                    </div>
+			`;
+					workingList.appendChild(bookingCard);
+				});
+			}
+			if (endBookings.length === 0) {
+				endList.innerHTML = '<p>Записей нет.</p>';
+			} else {
+				endBookings.forEach(booking => {
+					const bookingCard = document.createElement('div');
+					bookingCard.className = 'booking-card';
+					bookingCard.innerHTML = `
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
+			`;
+					workingList.appendChild(bookingCard);
 				});
 			}
 

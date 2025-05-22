@@ -10,6 +10,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const adminBtn = document.getElementById('admin-btn');
 	const controlBtn = document.getElementById('control-btn');
     const partnerBtn = document.getElementById('partner-btn');
+	const lkBtn = document.getElementById('lk-btn');
 
     // Карусель
     const track = document.querySelector('.carousel-track');
@@ -237,6 +238,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		} else {
             controlBtn.style.display = 'none';
         }
+		if (user.Role === 'admin_service') {
+			lkBtn.style.display = 'block';
+		} else {
+			lkBtn.style.display = 'none';
+		}
     }
 
     // Инициализация карты

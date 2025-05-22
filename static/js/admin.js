@@ -74,26 +74,25 @@ function loadBookings() {
 			return response.json();
 		})
 		.then(bookings => {
-			console.log('Получены данные записей:', bookings); // Отладка
-			// Очищаем списки
 			const pendingList = document.getElementById('pending-list');
 			const confirmedList = document.getElementById('confirmed-list');
 			const canceledList = document.getElementById('canceled-list');
+			const workingList = document.getElementById('working-list');
+			const endList = document.getElementById('end-list');
 
 			pendingList.innerHTML = '';
 			confirmedList.innerHTML = '';
 			canceledList.innerHTML = '';
+			workingList.innerHTML = '';
+			endList.innerHTML = '';
 
-			// Фильтруем записи по статусу
 			const pendingBookings = bookings.filter(booking => booking.status === 'pending');
 			const confirmedBookings = bookings.filter(booking => booking.status === 'confirmed');
 			const canceledBookings = bookings.filter(booking => booking.status === 'canceled');
+			const workingBookings = bookings.filter(booking => booking.status === 'working')
+			const endBookings = bookings.filter(booking => booking.status === 'end')
 
-			console.log('Ожидающие записи:', pendingBookings); // Отладка
-			console.log('Подтвержденные записи:', confirmedBookings); // Отладка
-			console.log('Отмененные записи:', canceledBookings); // Отладка
 
-			// Отображаем ожидающие записи
 			if (pendingBookings.length === 0) {
 				pendingList.innerHTML = '<p>Записей нет.</p>';
 			} else {
@@ -101,14 +100,18 @@ function loadBookings() {
 					const bookingCard = document.createElement('div');
 					bookingCard.className = 'booking-card';
 					bookingCard.innerHTML = `
-                        <div class="booking-info">
-                            <p><strong>ID:</strong> ${booking.id}</p>
-                            <p><strong>ID партнера:</strong> ${booking.partner_id}</p>
-                            <p><strong>ID пользователя:</strong> ${booking.user_id}</p>
-                            <p><strong>Дата:</strong> ${booking.booking_date}</p>
-                            <p><strong>Время:</strong> ${booking.booking_time}</p>
-                            <p><strong>Статус:</strong> ${booking.status}</p>
-                        </div>
+						<div class="booking-info">
+							<p><strong>ID записи:</strong> ${booking.id}</p>
+							<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+							<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+							<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+							<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+							<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+							<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+							<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+							<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+							<p><strong>Статус:</strong> ${booking.status}</p>
+						</div>
                         <div class="booking-actions">
                             <button onclick="updateBookingStatus(${booking.id}, 'confirmed')">Подтвердить</button>
                             <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
@@ -118,7 +121,6 @@ function loadBookings() {
 				});
 			}
 
-			// Отображаем подтвержденные записи
 			if (confirmedBookings.length === 0) {
 				confirmedList.innerHTML = '<p>Записей нет.</p>';
 			} else {
@@ -126,20 +128,27 @@ function loadBookings() {
 					const bookingCard = document.createElement('div');
 					bookingCard.className = 'booking-card';
 					bookingCard.innerHTML = `
-                        <div class="booking-info">
-                            <p><strong>ID:</strong> ${booking.id}</p>
-                            <p><strong>ID партнера:</strong> ${booking.partner_id}</p>
-                            <p><strong>ID пользователя:</strong> ${booking.user_id}</p>
-                            <p><strong>Дата:</strong> ${booking.booking_date}</p>
-                            <p><strong>Время:</strong> ${booking.booking_time}</p>
-                            <p><strong>Статус:</strong> ${booking.status}</p>
-                        </div>
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
+					<div class="booking-actions">
+                        <button onclick="updateBookingStatus(${booking.id}, 'working')">Отправить в работу</button>
+                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
+                    </div>
                     `;
 					confirmedList.appendChild(bookingCard);
 				});
 			}
 
-			// Отображаем отмененные записи
 			if (canceledBookings.length === 0) {
 				canceledList.innerHTML = '<p>Записей нет.</p>';
 			} else {
@@ -147,23 +156,74 @@ function loadBookings() {
 					const bookingCard = document.createElement('div');
 					bookingCard.className = 'booking-card';
 					bookingCard.innerHTML = `
-                        <div class="booking-info">
-                            <p><strong>ID:</strong> ${booking.id}</p>
-                            <p><strong>ID партнера:</strong> ${booking.partner_id}</p>
-                            <p><strong>ID пользователя:</strong> ${booking.user_id}</p>
-                            <p><strong>Дата:</strong> ${booking.booking_date}</p>
-                            <p><strong>Время:</strong> ${booking.booking_time}</p>
-                            <p><strong>Статус:</strong> ${booking.status}</p>
-                        </div>
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
                     `;
 					canceledList.appendChild(bookingCard);
 				});
 			}
+			if (workingBookings.length === 0) {
+				workingList.innerHTML = '<p>Записей нет.</p>';
+			} else {
+				workingBookings.forEach(booking => {
+					const bookingCard = document.createElement('div');
+					bookingCard.className = 'booking-card';
+					bookingCard.innerHTML = `
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
+					<div class="booking-actions">
+                        <button onclick="updateBookingStatus(${booking.id}, 'end')">Завершить</button>
+                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
+                    </div>
+			`;
+					workingList.appendChild(bookingCard);
+				});
+			}
+			if (endBookings.length === 0) {
+				endList.innerHTML = '<p>Записей нет.</p>';
+			} else {
+				endBookings.forEach(booking => {
+					const bookingCard = document.createElement('div');
+					bookingCard.className = 'booking-card';
+					bookingCard.innerHTML = `
+					<div class="booking-info">
+						<p><strong>ID записи:</strong> ${booking.id}</p>
+						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
+						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
+						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
+						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
+						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
+						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
+						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
+						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
+						<p><strong>Статус:</strong> ${booking.status}</p>
+					</div>
+			`;
+					workingList.appendChild(bookingCard);
+				});
+			}
 
-			// Отладка: проверим, отобразились ли списки
-			console.log('pending-list HTML:', pendingList.innerHTML);
-			console.log('confirmed-list HTML:', confirmedList.innerHTML);
-			console.log('canceled-list HTML:', canceledList.innerHTML);
+
 		})
 		.catch(error => {
 			console.error('Ошибка загрузки записей:', error);
@@ -256,7 +316,7 @@ async function approveService(serviceId, flag) {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ service_id: serviceId})
+			body: JSON.stringify({ service_id: serviceId })
 		});
 		if (response.ok) {
 			renderServicesTable();
@@ -274,7 +334,7 @@ async function disapproveService(serviceId) {
 			headers: {
 				'Content-Type': 'application/json'
 			},
-			body: JSON.stringify({ service_id: serviceId})
+			body: JSON.stringify({ service_id: serviceId })
 		});
 		if (response.ok) {
 			renderServicesTable();
