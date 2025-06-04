@@ -1305,13 +1305,6 @@ func partnerOwnerHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func managePartnerOfferingsHandler(w http.ResponseWriter, r *http.Request) {
-	// Базовая проверка авторизации
-	session, _ := store.Get(r, "session")
-	_, ok := session.Values["user_id"].(int)
-	if !ok {
-		http.Error(w, "Не авторизован", http.StatusUnauthorized)
-		return
-	}
 
 	if r.Method == http.MethodGet {
 		// Получение списка услуг
@@ -1367,6 +1360,13 @@ func managePartnerOfferingsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if r.Method == http.MethodPost {
+		// Базовая проверка авторизации
+		session, _ := store.Get(r, "session")
+		_, ok := session.Values["user_id"].(int)
+		if !ok {
+			http.Error(w, "Не авторизован", http.StatusUnauthorized)
+			return
+		}
 		var req struct {
 			Name      string  `json:"name"`
 			Price     float64 `json:"price"`
@@ -1440,6 +1440,13 @@ func managePartnerOfferingsHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Извлечение serviceID для PUT и DELETE с использованием mux.Vars
+	// Базовая проверка авторизации
+	session, _ := store.Get(r, "session")
+	_, ok := session.Values["user_id"].(int)
+	if !ok {
+		http.Error(w, "Не авторизован", http.StatusUnauthorized)
+		return
+	}
 	vars := mux.Vars(r)
 	serviceIDStr := vars["id"]
 	if serviceIDStr == "" {
