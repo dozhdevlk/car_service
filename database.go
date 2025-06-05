@@ -17,7 +17,6 @@ func initDB() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	defer db.Close()
 
 	err = db.Ping()
 	if err != nil {
