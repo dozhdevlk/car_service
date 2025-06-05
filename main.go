@@ -15,6 +15,7 @@ import (
 	"strings"
 	"time"
 
+	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
 	"github.com/gorilla/sessions"
@@ -27,6 +28,7 @@ var (
 	store = sessions.NewCookieStore([]byte("super-secret-key"))
 )
 var apiKey string
+var tokenTgBot string
 
 type User struct {
 	ID           int
@@ -121,6 +123,8 @@ func main() {
 		log.Fatal(err)
 	}
 
+	StartTelegramBot(db)
+
 	// Создание таблиц при первом запуске
 	initDB()
 
@@ -165,6 +169,8 @@ func main() {
 	r.HandleFunc("/api/admin/disapprove-service", adminDisApproveServiceHandler).Methods("POST")
 	r.HandleFunc("/api/admin/users", adminUsersHandler).Methods("GET")
 	r.HandleFunc("/api/admin/delete-user/{id}", deleteUser).Methods("DELETE")
+	//tg bot init
+	r.HandleFunc("/api/telegram/init", HandleInitTelegram).Methods("POST")
 	// Статические файлы
 	r.PathPrefix("/static/").Handler(http.StripPrefix("/static/", http.FileServer(http.Dir("./static"))))
 	r.PathPrefix("/uploads/").Handler(http.StripPrefix("/uploads/", http.FileServer(http.Dir("./uploads"))))
@@ -338,6 +344,45 @@ func initDB() {
 		log.Fatal("Error creating announcements table:", err)
 	}
 
+}
+
+func StartTelegramBot(db *sql.DB) {
+	bot, err := tgbotapi.NewBotAPI(os.Getenv("TG_BOT_TOKEN"))
+	if err != nil {
+		log.Fatalf("Telegram bot init error: %v", err)
+	}
+
+	bot.Debug = true
+	log.Printf("Telegram bot authorized on account %s", bot.Self.UserName)
+
+	u := tgbotapi.NewUpdate(0)
+	u.Timeout = 60
+	updates := bot.GetUpdatesChan(u)
+
+	for update := range updates {
+		if update.Message == nil || !update.Message.IsCommand() {
+			continue
+		}
+
+		if update.Message.Command() == "start" {
+			token := update.Message.CommandArguments()
+			var userID int
+			err := db.QueryRow("SELECT id FROM users WHERE telegram_token = $1", token).Scan(&userID)
+			if err != nil {
+				log.Println("Invalid or expired token:", err)
+				continue
+			}
+
+			_, err = db.Exec("UPDATE users SET telegram_chat_id = $1, telegram_token = NULL WHERE id = $2", update.Message.Chat.ID, userID)
+			if err != nil {
+				log.Println("Failed to save chat_id:", err)
+				continue
+			}
+
+			msg := tgbotapi.NewMessage(update.Message.Chat.ID, "Вы успешно подключили Telegram!")
+			bot.Send(msg)
+		}
+	}
 }
 
 // Обработчики API
@@ -1858,6 +1903,28 @@ func deleteAnnouncementHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusNoContent) // Отправляем успешный ответ без содержимого
+}
+
+func HandleInitTelegram(w http.ResponseWriter, r *http.Request) {
+	session, _ := store.Get(r, "session")
+	userID, ok := session.Values["user_id"].(int)
+	if !ok {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	token := uuid.New().String()
+
+	_, err := db.Exec(`UPDATE users SET telegram_token = $1 WHERE id = $2`, token, userID)
+	if err != nil {
+		http.Error(w, "Database error", http.StatusInternalServerError)
+		log.Println("DB error:", err)
+		return
+	}
+
+	resp := map[string]string{"token": token}
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(resp)
 }
 
 // Обработчики страниц

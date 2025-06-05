@@ -10,4 +10,7 @@ require (
 	golang.org/x/crypto v0.37.0
 )
 
-require github.com/gorilla/securecookie v1.1.2 // indirect
+require (
+	github.com/go-telegram-bot-api/telegram-bot-api/v5 v5.5.1 // indirect
+	github.com/gorilla/securecookie v1.1.2 // indirect
+)
