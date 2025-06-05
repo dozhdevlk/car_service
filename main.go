@@ -123,8 +123,6 @@ func main() {
 		log.Fatal(err)
 	}
 
-	StartTelegramBot(db)
-
 	// Создание таблиц при первом запуске
 	initDB()
 
@@ -179,6 +177,7 @@ func main() {
 	fmt.Println("Server running on :8080")
 	log.Fatal(http.ListenAndServe(":8080", r))
 
+	StartTelegramBot(db)
 }
 
 func geocodeAddress(address string) (float64, float64, error) {
