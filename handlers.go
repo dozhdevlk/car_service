@@ -991,7 +991,7 @@ func updateBookingHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("Ошибка при получении информации о записи:", err)
 	} else {
 		message := fmt.Sprintf(
-			"Обновление записи №%d:\nСТО: %s\n Адрес: %s\nДата: %s\nВремя: %s\nНовый статус: %s",
+			"Обновление записи №%d:\n\n🚗**СТО:** %s\n📍**Адрес:** %s\n📅**Дата:** %s\n🕒**Время:** %s\n\n**Новый статус: %s**",
 			booking.ID,
 			booking.PartnerName,
 			booking.PartnerAddress,

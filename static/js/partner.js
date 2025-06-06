@@ -277,7 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				partner_id: parseInt(partnerId),
 				booking_date: bookingDate,
 				booking_time: bookingTime,
-				status: 'pending'
+				status: '⏳ Ожидает подтверждения'
 			};
 
 			fetch('/api/bookings', {

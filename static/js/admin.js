@@ -62,7 +62,6 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function loadBookings() {
-	console.log('Начало загрузки записей...'); // Отладка
 	fetch('/api/bookings')
 		.then(response => {
 			if (!response.ok) throw new Error('Ошибка при загрузке записей');
@@ -81,11 +80,11 @@ function loadBookings() {
 			workingList.innerHTML = '';
 			endList.innerHTML = '';
 
-			const pendingBookings = bookings.filter(booking => booking.status === 'pending');
-			const confirmedBookings = bookings.filter(booking => booking.status === 'confirmed');
-			const canceledBookings = bookings.filter(booking => booking.status === 'canceled');
-			const workingBookings = bookings.filter(booking => booking.status === 'working')
-			const endBookings = bookings.filter(booking => booking.status === 'end')
+			const pendingBookings = bookings.filter(booking => booking.status === '⏳ Ожидает подтверждения');
+			const confirmedBookings = bookings.filter(booking => booking.status === '✅ Подтверждена');
+			const canceledBookings = bookings.filter(booking => booking.status === '❌ Отменена');
+			const workingBookings = bookings.filter(booking => booking.status === '🔧 В работе')
+			const endBookings = bookings.filter(booking => booking.status === '🏁 Завершена')
 
 
 			if (pendingBookings.length === 0) {
@@ -108,8 +107,8 @@ function loadBookings() {
 							<p><strong>Статус:</strong> ${booking.status}</p>
 						</div>
                         <div class="booking-actions">
-                            <button onclick="updateBookingStatus(${booking.id}, 'confirmed')">Подтвердить</button>
-                            <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
+                            <button onclick="updateBookingStatus(${booking.id}, '✅ Подтверждена')">Подтвердить</button>
+                            <button onclick="updateBookingStatus(${booking.id}, '❌ Отменена')">Отменить</button>
                         </div>
                     `;
 					pendingList.appendChild(bookingCard);
@@ -136,8 +135,8 @@ function loadBookings() {
 						<p><strong>Статус:</strong> ${booking.status}</p>
 					</div>
 					<div class="booking-actions">
-                        <button onclick="updateBookingStatus(${booking.id}, 'working')">Отправить в работу</button>
-                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
+                        <button onclick="updateBookingStatus(${booking.id}, '🔧 В работе')">Отправить в работу</button>
+                        <button onclick="updateBookingStatus(${booking.id}, '❌ Отменена')">Отменить</button>
                     </div>
                     `;
 					confirmedList.appendChild(bookingCard);
@@ -187,8 +186,8 @@ function loadBookings() {
 						<p><strong>Статус:</strong> ${booking.status}</p>
 					</div>
 					<div class="booking-actions">
-                        <button onclick="updateBookingStatus(${booking.id}, 'end')">Завершить</button>
-                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
+                        <button onclick="updateBookingStatus(${booking.id}, '🏁 Завершена')">Завершить</button>
+                        <button onclick="updateBookingStatus(${booking.id}, '❌ Отменена')">Отменить</button>
                     </div>
 			`;
 					workingList.appendChild(bookingCard);
