@@ -65,7 +65,7 @@ function loadAllBookings() {
 
 function applyFilters(status = '', searchId = '', searchPhone = '') {
 	const filteredBookings = allBookings.filter(booking => {
-		const isStatusMatch =  booking.status === status; // Фильтрация по статусу
+		const isStatusMatch = ((status === 'all') || (booking.status === status)); // Фильтрация по статусу
 		const isIdMatch = searchId ? booking.id.toString().includes(searchId) : true; // Фильтрация по ID
 		const isPhoneMatch = searchPhone ? booking.partner_phone.includes(searchPhone) : true; // Фильтрация по телефону
 

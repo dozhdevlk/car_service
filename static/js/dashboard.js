@@ -176,6 +176,7 @@ document.addEventListener('DOMContentLoaded', () => {
 	const tabs = document.querySelectorAll('.tab');
 	tabs.forEach(tab => {
 		tab.addEventListener('click', () => {
+			// Удаляем класс active у всех вкладок и содержимого
 			tabs.forEach(t => t.classList.remove('active'));
 			document.querySelectorAll('.order-tab-content').forEach(content => {
 				content.classList.remove('active');
@@ -375,7 +376,7 @@ function loadBookings(partnerId) {
 			workingList.innerHTML = '';
 			endList.innerHTML = '';
 
-			const pendingBookings = bookings.filter(booking => booking.status === '⏳ Ожидает подтверждения');
+			const pendingBookings = bookings.filter(booking => booking.status === '⏳ Ожидает');
 			const confirmedBookings = bookings.filter(booking => booking.status === '✅ Подтверждена');
 			const canceledBookings = bookings.filter(booking => booking.status === '❌ Отменена');
 			const workingBookings = bookings.filter(booking => booking.status === '🔧 В работе')
