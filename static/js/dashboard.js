@@ -176,7 +176,6 @@ document.addEventListener('DOMContentLoaded', () => {
 	const tabs = document.querySelectorAll('.tab');
 	tabs.forEach(tab => {
 		tab.addEventListener('click', () => {
-			// Удаляем класс active у всех вкладок и содержимого
 			tabs.forEach(t => t.classList.remove('active'));
 			document.querySelectorAll('.order-tab-content').forEach(content => {
 				content.classList.remove('active');
