@@ -78,7 +78,7 @@ function applyFilters(status = '', searchId = '', searchPhone = '') {
 
 // Функция для обновления контента вкладки
 function updateTabContent(bookings) {
-	const list = document.getElementById(`${tabId}-list`);
+	const list = document.getElementById('all-list');
 	list.innerHTML = ''; // Очищаем текущий контент
 
 	if (bookings.length === 0) {
