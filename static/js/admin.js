@@ -23,32 +23,11 @@ document.addEventListener('DOMContentLoaded', () => {
 			tabContent.classList.add('active');
 
 			if (tabId === 'orders-content') {
-				activateOrderTab('all');
 				loadAllBookings();
-				applyFilters(tabId);
 			}
 		});
 	});
 
-	// Переключение внутренних вкладок заказов
-	const tabs = document.querySelectorAll('.tab');
-	tabs.forEach(tab => {
-		tab.addEventListener('click', () => {
-			tabs.forEach(t => t.classList.remove('active'));
-			document.querySelectorAll('.order-tab-content').forEach(content => {
-				content.classList.remove('active');
-				content.style.display = 'none';
-			});
-
-			tab.classList.add('active');
-			const tabId = tab.getAttribute('data-tab');
-			const tabContent = document.getElementById(tabId);
-			tabContent.classList.add('active');
-			tabContent.style.display = 'block';
-
-			applyFilters(tabId);
-		});
-	});
 
 	// Активируем первую вкладку (dashboard) при загрузке
 	const defaultTabLink = document.querySelector('.tab-link');
@@ -60,7 +39,9 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('search-button').addEventListener('click', () => {
 		const searchId = document.getElementById('search-id').value;
 		const searchPhone = document.getElementById('search-phone').value;
-		filterRecords(searchId, searchPhone); // Фильтрация записей по ID и телефону
+		const selectedStatus = document.getElementById('status-filter').value;
+
+		applyFilters(selectedStatus, searchId, searchPhone); // Фильтрация записей по ID и телефону
 	});
 });
 
@@ -82,24 +63,21 @@ function loadAllBookings() {
 		});
 }
 
-// Функция для применения фильтрации записей
-function applyFilters(tabId = '') {
-	const searchId = document.getElementById('search-id').value;
-	const searchPhone = document.getElementById('search-phone').value;
-
-	// Фильтруем записи по ID и телефону
+function applyFilters(status = '', searchId = '', searchPhone = '') {
 	const filteredBookings = allBookings.filter(booking => {
-		return (searchId ? booking.id.toString().includes(searchId) : true) &&
-			(searchPhone ? booking.partner_phone.includes(searchPhone) : true) &&
-			(tabId === 'all' || booking.status === tabId); // Фильтрация по статусу вкладки
+		const isStatusMatch =  booking.status === status; // Фильтрация по статусу
+		const isIdMatch = searchId ? booking.id.toString().includes(searchId) : true; // Фильтрация по ID
+		const isPhoneMatch = searchPhone ? booking.partner_phone.includes(searchPhone) : true; // Фильтрация по телефону
+
+		return isStatusMatch && isIdMatch && isPhoneMatch; // Все условия должны совпасть
 	});
 
-	// Обновляем отображение записей в зависимости от вкладки
-	updateTabContent(tabId, filteredBookings);
+	// Обновляем отображение записей
+	updateTabContent(filteredBookings);
 }
 
 // Функция для обновления контента вкладки
-function updateTabContent(tabId, bookings) {
+function updateTabContent(bookings) {
 	const list = document.getElementById(`${tabId}-list`);
 	list.innerHTML = ''; // Очищаем текущий контент
 
@@ -131,16 +109,6 @@ function updateTabContent(tabId, bookings) {
 	}
 }
 
-// Функция для фильтрации записей по ID и телефону
-function filterRecords(searchId = '', searchPhone = '') {
-	// Применяем фильтрацию ко всем вкладкам
-	applyFilters('all', searchId, searchPhone); // Для вкладки "Все"
-	applyFilters('pending', searchId, searchPhone); // Для вкладки "Ожидающие"
-	applyFilters('confirmed', searchId, searchPhone); // Для вкладки "Подтвержденные"
-	applyFilters('working', searchId, searchPhone); // Для вкладки "Записи в работе"
-	applyFilters('end', searchId, searchPhone); // Для вкладки "Завершенные"
-	applyFilters('canceled', searchId, searchPhone); // Для вкладки "Отмененные"
-}
 
 function getActionButton(status, bookingId) {
 	switch (status) {
@@ -161,16 +129,16 @@ function getActionButton(status, bookingId) {
 			return ''; // Для других статусов кнопки не отображаются
 	}
 }
-// Функция для фильтрации записей по ID и телефону
-function filterRecords(searchId = '', searchPhone = '') {
-	// Применяем фильтрацию ко всем вкладкам
-	applyFilters('all', searchId, searchPhone); // Для вкладки "Все"
-	applyFilters('pending', searchId, searchPhone); // Для вкладки "Ожидающие"
-	applyFilters('confirmed', searchId, searchPhone); // Для вкладки "Подтвержденные"
-	applyFilters('working', searchId, searchPhone); // Для вкладки "Записи в работе"
-	applyFilters('end', searchId, searchPhone); // Для вкладки "Завершенные"
-	applyFilters('canceled', searchId, searchPhone); // Для вкладки "Отмененные"
-}
+// // Функция для фильтрации записей по ID и телефону
+// function filterRecords(searchId = '', searchPhone = '') {
+// 	// Применяем фильтрацию ко всем вкладкам
+// 	applyFilters('all', searchId, searchPhone); // Для вкладки "Все"
+// 	applyFilters('pending', searchId, searchPhone); // Для вкладки "Ожидающие"
+// 	applyFilters('confirmed', searchId, searchPhone); // Для вкладки "Подтвержденные"
+// 	applyFilters('working', searchId, searchPhone); // Для вкладки "Записи в работе"
+// 	applyFilters('end', searchId, searchPhone); // Для вкладки "Завершенные"
+// 	applyFilters('canceled', searchId, searchPhone); // Для вкладки "Отмененные"
+// }
 
 // function loadBookings() {
 // 	fetch('/api/bookings')

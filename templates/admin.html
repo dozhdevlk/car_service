@@ -7,6 +7,20 @@
 	<title>Админ-панель</title>
 	<link rel="stylesheet" href="/static/css/admin.css">
 	<style>
+		.booking-list-container {
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+		}
+
+		.booking-card {
+			border: 1px solid #ddd;
+			padding: 15px;
+			border-radius: 5px;
+			background-color: #fff;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+		}
+
 		.tabs {
 			display: flex;
 			border-bottom: 1px solid #ccc;
@@ -92,14 +106,17 @@
 			<div id="orders-content" class="main-tab-content" style="display: none;">
 				<h2>Записи</h2>
 				<div class="dashboard-container">
-					<nav class="tabs">
-						<div class="tab" data-tab="all">Все</div>
-						<div class="tab" data-tab="pending">Ожидающие</div>
-						<div class="tab" data-tab="confirmed">Подтвержденные</div>
-						<div class="tab" data-tab="working">Записи в работе</div>
-						<div class="tab" data-tab="end">Завершенные записи</div>
-						<div class="tab" data-tab="canceled">Отмененные</div>
-					</nav>
+					<div>
+						<label for="status-filter">Выберите статус:</label>
+						<select id="status-filter">
+							<option value="all">Все</option>
+							<option value="pending">Ожидающие</option>
+							<option value="confirmed">Подтвержденные</option>
+							<option value="working">Записи в работе</option>
+							<option value="end">Завершенные записи</option>
+							<option value="canceled">Отмененные</option>
+						</select>
+					</div>
 
 					<div>
 						<label for="search-id">Поиск по номеру записи (ID):</label>
@@ -110,32 +127,8 @@
 						<input type="text" id="search-phone" placeholder="Введите номер телефона" />
 					</div>
 					<button id="search-button">Поиск</button>
-
-					<div id="all" class="order-tab-content">
-						<h2>Все записи</h2>
-						<div id="all-list"></div>
-					</div>
-
-					<div id="pending" class="order-tab-content">
-						<h2>Ожидающие записи</h2>
-						<div id="pending-list"></div>
-					</div>
-					<div id="confirmed" class="order-tab-content" style="display: none;">
-						<h2>Подтвержденные записи</h2>
-						<div id="confirmed-list"></div>
-					</div>
-					<div id="working" class="order-tab-content" style="display: none;">
-						<h2>Записи в работе</h2>
-						<div id="working-list"></div>
-					</div>
-					<div id="end" class="order-tab-content" style="display: none;">
-						<h2>Завершенные записи</h2>
-						<div id="end-list"></div>
-					</div>
-					<div id="canceled" class="order-tab-content" style="display: none;">
-						<h2>Отмененные записи</h2>
-						<div id="canceled-list"></div>
-					</div>
+				</div>
+				<div id="all-list" class="booking-list-container">
 				</div>
 			</div>
 		</div>
