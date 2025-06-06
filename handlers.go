@@ -956,6 +956,52 @@ func updateBookingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var booking Booking
+	err = db.QueryRow(`
+		SELECT 
+			b.id, 
+			b.partner_id, 
+			b.user_id, 
+			b.booking_date, 
+			b.booking_time, 
+			b.status, 
+			u.name AS user_name, 
+			u.email AS user_email,
+			s.name AS partner_name,
+			s.address AS partner_address,
+			s.phone AS partner_phone
+		FROM bookings b
+		JOIN users u ON b.user_id = u.id
+		JOIN services s ON b.partner_id = s.id
+		WHERE b.id = $1
+	`, id).Scan(
+		&booking.ID,
+		&booking.PartnerID,
+		&booking.UserID,
+		&booking.BookingDate,
+		&booking.BookingTime,
+		&booking.Status,
+		&booking.UserName,
+		&booking.UserEmail,
+		&booking.PartnerName,
+		&booking.PartnerAddress,
+		&booking.PartnerPhone,
+	)
+	if err != nil {
+		log.Println("Ошибка при получении информации о записи:", err)
+	} else {
+		message := fmt.Sprintf(
+			"Обновление записи №%d:\nСТО: %s\n Адрес: %s\nДата: %s\nВремя: %s\nНовый статус: %s",
+			booking.ID,
+			booking.PartnerName,
+			booking.PartnerAddress,
+			booking.BookingDate,
+			booking.BookingTime,
+			booking.Status,
+		)
+		SendTelegramNotification(db, booking.UserID, message)
+	}
+
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(map[string]string{"message": "Запись успешно обновлена"})
 }

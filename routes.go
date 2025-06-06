@@ -25,12 +25,12 @@ func setupRoutes(r *mux.Router) {
 	r.HandleFunc("/api/partner-owner", partnerOwnerHandler).Methods("GET")
 	r.HandleFunc("/api/register-partner", registerPartnerHandler).Methods("POST")
 	r.HandleFunc("/api/partner/{id}", partnerDetailsHandler).Methods("GET", "PUT")
+	r.HandleFunc("/api/available-times", getAvailableTimeSlotsHandler).Methods("POST")
 	r.HandleFunc("/api/bookings", createBookingHandler).Methods("POST")
 	r.HandleFunc("/api/bookings", getBookingsHandler).Methods("GET")
 	r.HandleFunc("/api/bookings-client", getBookingsHandlerClientID).Methods("GET")
 	r.HandleFunc("/api/bookings/{id}", getBookingsHandlerID).Methods("GET")
 	r.HandleFunc("/api/bookings/{id}", updateBookingHandler).Methods("PUT")
-	r.HandleFunc("/api/available-times", getAvailableTimeSlotsHandler).Methods("POST")
 
 	r.HandleFunc("/api/announcements/{partner_id}", getAnnouncementsHandler).Methods("GET")
 	r.HandleFunc("/api/announcements", createAnnouncementHandler).Methods("POST")
