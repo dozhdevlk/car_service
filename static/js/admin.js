@@ -74,7 +74,7 @@ function loadAllBookings() {
 		})
 		.then(bookings => {
 			allBookings = bookings; // Сохраняем все записи в памяти
-			applyFilters(); // Применяем фильтрацию сразу после загрузки данных
+			applyFilters('all'); // Применяем фильтрацию сразу после загрузки данных
 		})
 		.catch(error => {
 			console.error('Ошибка загрузки записей:', error);
@@ -83,7 +83,7 @@ function loadAllBookings() {
 }
 
 // Функция для применения фильтрации записей
-function applyFilters(tabId = 'all') {
+function applyFilters(tabId = '') {
 	const searchId = document.getElementById('search-id').value;
 	const searchPhone = document.getElementById('search-phone').value;
 
