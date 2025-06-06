@@ -63,14 +63,11 @@ document.addEventListener('DOMContentLoaded', () => {
 		filterRecords(searchId, searchPhone); // Фильтрация записей по ID и телефону
 	});
 });
-function filterRecords(searchId = '', searchPhone = '') {
-	loadAllOrders(searchId, searchPhone);
-	loadBookings(searchId, searchPhone);
-}
+
 
 // Функция для загрузки всех записей и сохранения их в память
 function loadAllBookings() {
-	fetch('http://85.192.61.46:8080/api/bookings')
+	fetch('/api/bookings')
 		.then(response => {
 			if (!response.ok) throw new Error('Ошибка при загрузке записей');
 			return response.json();
@@ -83,6 +80,22 @@ function loadAllBookings() {
 			console.error('Ошибка загрузки записей:', error);
 			document.getElementById('all-list').innerHTML = '<p>Не удалось загрузить записи.</p>';
 		});
+}
+
+// Функция для применения фильтрации записей
+function applyFilters(tabId = 'all') {
+	const searchId = document.getElementById('search-id').value;
+	const searchPhone = document.getElementById('search-phone').value;
+
+	// Фильтруем записи по ID и телефону
+	const filteredBookings = allBookings.filter(booking => {
+		return (searchId ? booking.id.toString().includes(searchId) : true) &&
+			(searchPhone ? booking.partner_phone.includes(searchPhone) : true) &&
+			(tabId === 'all' || booking.status === tabId); // Фильтрация по статусу вкладки
+	});
+
+	// Обновляем отображение записей в зависимости от вкладки
+	updateTabContent(tabId, filteredBookings);
 }
 
 // Функция для обновления контента вкладки
@@ -147,6 +160,16 @@ function getActionButton(status, bookingId) {
 		default:
 			return ''; // Для других статусов кнопки не отображаются
 	}
+}
+// Функция для фильтрации записей по ID и телефону
+function filterRecords(searchId = '', searchPhone = '') {
+	// Применяем фильтрацию ко всем вкладкам
+	applyFilters('all', searchId, searchPhone); // Для вкладки "Все"
+	applyFilters('pending', searchId, searchPhone); // Для вкладки "Ожидающие"
+	applyFilters('confirmed', searchId, searchPhone); // Для вкладки "Подтвержденные"
+	applyFilters('working', searchId, searchPhone); // Для вкладки "Записи в работе"
+	applyFilters('end', searchId, searchPhone); // Для вкладки "Завершенные"
+	applyFilters('canceled', searchId, searchPhone); // Для вкладки "Отмененные"
 }
 
 // function loadBookings() {
