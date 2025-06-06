@@ -6,65 +6,6 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Админ-панель</title>
 	<link rel="stylesheet" href="/static/css/admin.css">
-	<style>
-		.booking-list-container {
-			display: flex;
-			flex-direction: column;
-			gap: 10px;
-		}
-
-		.booking-card {
-			border: 1px solid #ddd;
-			padding: 15px;
-			border-radius: 5px;
-			background-color: #fff;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-		}
-
-		.tabs {
-			display: flex;
-			border-bottom: 1px solid #ccc;
-			margin-bottom: 20px;
-		}
-
-		.tab {
-			padding: 10px 20px;
-			cursor: pointer;
-			font-weight: bold;
-			border-bottom: 3px solid transparent;
-			transition: border-bottom 0.3s;
-		}
-
-		.tab.active {
-			border-bottom: 3px solid #007bff;
-			color: #007bff;
-		}
-
-		.booking-card {
-			border: 1px solid #ddd;
-			padding: 10px;
-			margin-bottom: 10px;
-			border-radius: 5px;
-		}
-
-		.booking-info,
-		.booking-actions {
-			display: inline-block;
-			vertical-align: top;
-		}
-
-		.booking-actions button {
-			margin-right: 5px;
-			padding: 5px 10px;
-		}
-
-		body {
-			font-family: Arial, sans-serif;
-			margin: 0;
-			padding: 0;
-			background-color: #f4f4f4;
-		}
-	</style>
 </head>
 
 <body>
@@ -85,9 +26,17 @@
 			<div id="dashboard-content" class="main-tab-content" style="display: block;">
 				<h2>Статистика</h2>
 				<div class="metrics-grid">
-					<div class="metric-card">Новые сервисы: <span id="pending-services">0</span></div>
-					<div class="metric-card">Всего записей: <span id="total-bookings">0</span></div>
-					<div class="metric-card">Всего пользователей: <span id="total-users">0</span></div>
+					<div class="metrics-grid">
+						<div class="metric-card" id="new-services-card">
+							Новые сервисы: <span id="pending-services">0</span>
+						</div>
+						<div class="metric-card" id="total-bookings-card">
+							Всего записей: <span id="total-bookings">0</span>
+						</div>
+						<div class="metric-card" id="total-users-card">
+							Всего пользователей: <span id="total-users">0</span>
+						</div>
+					</div>
 				</div>
 			</div>
 
@@ -110,7 +59,7 @@
 						<label for="status-filter">Выберите статус:</label>
 						<select id="status-filter">
 							<option value="all">Все</option>
-							<option value="⏳ Ожидает">Ожидающие</option>
+							<option value="⏳ Ожидает подтверждения">Ожидающие</option>
 							<option value="✅ Подтверждена">Подтвержденные</option>
 							<option value="🔧 В работе">Записи в работе</option>
 							<option value="🏁 Завершена">Завершенные записи</option>

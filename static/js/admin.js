@@ -1,10 +1,26 @@
 let allBookings = [];
 
 document.addEventListener('DOMContentLoaded', () => {
+	// Переход на вкладку "Сервисы" при клике на карточку "Новые сервисы"
+	document.getElementById('new-services-card').addEventListener('click', () => {
+		switchTab('services-content');
+	});
+
+	// Переход на вкладку "Все записи" при клике на карточку "Всего записей"
+	document.getElementById('total-bookings-card').addEventListener('click', () => {
+		switchTab('orders-content');
+	});
+
+	// Переход на вкладку "Пользователи" при клике на карточку "Всего пользователей"
+	document.getElementById('total-users-card').addEventListener('click', () => {
+		switchTab('users-content');
+	});
 	// Инициализация
 	loadDashboard();
 	renderServicesTable();
 	renderUsersTable();
+
+
 
 	// Переключение вкладок через боковую панель
 	document.querySelectorAll('.tab-link').forEach(link => {
@@ -45,6 +61,19 @@ document.addEventListener('DOMContentLoaded', () => {
 	});
 });
 
+function switchTab(tabId) {
+	// Скрываем все вкладки
+	document.querySelectorAll('.main-tab-content').forEach(tab => {
+		tab.style.display = 'none';
+	});
+
+	// Показываем выбранную вкладку
+	document.getElementById(tabId).style.display = 'block';
+	document.querySelectorAll('.tab-link').forEach(link => {
+		link.classList.remove('active');
+	});
+	document.querySelector(`.tab-link[data-tab="${tabId}"]`).classList.add('active');
+}
 
 // Функция для загрузки всех записей и сохранения их в память
 function loadAllBookings() {
@@ -129,226 +158,11 @@ function getActionButton(status, bookingId) {
 			return ''; // Для других статусов кнопки не отображаются
 	}
 }
-// // Функция для фильтрации записей по ID и телефону
-// function filterRecords(searchId = '', searchPhone = '') {
-// 	// Применяем фильтрацию ко всем вкладкам
-// 	applyFilters('all', searchId, searchPhone); // Для вкладки "Все"
-// 	applyFilters('pending', searchId, searchPhone); // Для вкладки "Ожидающие"
-// 	applyFilters('confirmed', searchId, searchPhone); // Для вкладки "Подтвержденные"
-// 	applyFilters('working', searchId, searchPhone); // Для вкладки "Записи в работе"
-// 	applyFilters('end', searchId, searchPhone); // Для вкладки "Завершенные"
-// 	applyFilters('canceled', searchId, searchPhone); // Для вкладки "Отмененные"
-// }
-
-// function loadBookings() {
-// 	fetch('/api/bookings')
-// 		.then(response => {
-// 			if (!response.ok) throw new Error('Ошибка при загрузке записей');
-// 			return response.json();
-// 		})
-// 		.then(bookings => {
-// 			const pendingList = document.getElementById('pending-list');
-// 			const confirmedList = document.getElementById('confirmed-list');
-// 			const canceledList = document.getElementById('canceled-list');
-// 			const workingList = document.getElementById('working-list');
-// 			const endList = document.getElementById('end-list');
-
-// 			pendingList.innerHTML = '';
-// 			confirmedList.innerHTML = '';
-// 			canceledList.innerHTML = '';
-// 			workingList.innerHTML = '';
-// 			endList.innerHTML = '';
-
-// 			const pendingBookings = bookings.filter(booking => booking.status === '⏳ Ожидает подтверждения');
-// 			const confirmedBookings = bookings.filter(booking => booking.status === '✅ Подтверждена');
-// 			const canceledBookings = bookings.filter(booking => booking.status === '❌ Отменена');
-// 			const workingBookings = bookings.filter(booking => booking.status === '🔧 В работе')
-// 			const endBookings = bookings.filter(booking => booking.status === '🏁 Завершена')
-
-
-// 			if (pendingBookings.length === 0) {
-// 				pendingList.innerHTML = '<p>Записей нет.</p>';
-// 			} else {
-// 				pendingBookings.forEach(booking => {
-// 					const bookingCard = document.createElement('div');
-// 					bookingCard.className = 'booking-card';
-// 					bookingCard.innerHTML = `
-// 						<div class="booking-info">
-// 							<p><strong>ID записи:</strong> ${booking.id}</p>
-// 							<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
-// 							<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
-// 							<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
-// 							<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
-// 							<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
-// 							<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
-// 							<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
-// 							<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
-// 							<p><strong>Статус:</strong> ${booking.status}</p>
-// 						</div>
-//                         <div class="booking-actions">
-//                             <button onclick="updateBookingStatus(${booking.id}, '✅ Подтверждена')">Подтвердить</button>
-//                             <button onclick="updateBookingStatus(${booking.id}, '❌ Отменена')">Отменить</button>
-//                         </div>
-//                     `;
-// 					pendingList.appendChild(bookingCard);
-// 				});
-// 			}
-
-// 			if (confirmedBookings.length === 0) {
-// 				confirmedList.innerHTML = '<p>Записей нет.</p>';
-// 			} else {
-// 				confirmedBookings.forEach(booking => {
-// 					const bookingCard = document.createElement('div');
-// 					bookingCard.className = 'booking-card';
-// 					bookingCard.innerHTML = `
-// 					<div class="booking-info">
-// 						<p><strong>ID записи:</strong> ${booking.id}</p>
-// 						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
-// 						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
-// 						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
-// 						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
-// 						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
-// 						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
-// 						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
-// 						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
-// 						<p><strong>Статус:</strong> ${booking.status}</p>
-// 					</div>
-// 					<div class="booking-actions">
-//                         <button onclick="updateBookingStatus(${booking.id}, '🔧 В работе')">Отправить в работу</button>
-//                         <button onclick="updateBookingStatus(${booking.id}, '❌ Отменена')">Отменить</button>
-//                     </div>
-//                     `;
-// 					confirmedList.appendChild(bookingCard);
-// 				});
-// 			}
-
-// 			if (canceledBookings.length === 0) {
-// 				canceledList.innerHTML = '<p>Записей нет.</p>';
-// 			} else {
-// 				canceledBookings.forEach(booking => {
-// 					const bookingCard = document.createElement('div');
-// 					bookingCard.className = 'booking-card';
-// 					bookingCard.innerHTML = `
-// 					<div class="booking-info">
-// 						<p><strong>ID записи:</strong> ${booking.id}</p>
-// 						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
-// 						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
-// 						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
-// 						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
-// 						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
-// 						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
-// 						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
-// 						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
-// 						<p><strong>Статус:</strong> ${booking.status}</p>
-// 					</div>
-//                     `;
-// 					canceledList.appendChild(bookingCard);
-// 				});
-// 			}
-// 			if (workingBookings.length === 0) {
-// 				workingList.innerHTML = '<p>Записей нет.</p>';
-// 			} else {
-// 				workingBookings.forEach(booking => {
-// 					const bookingCard = document.createElement('div');
-// 					bookingCard.className = 'booking-card';
-// 					bookingCard.innerHTML = `
-// 					<div class="booking-info">
-// 						<p><strong>ID записи:</strong> ${booking.id}</p>
-// 						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
-// 						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
-// 						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
-// 						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
-// 						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
-// 						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
-// 						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
-// 						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
-// 						<p><strong>Статус:</strong> ${booking.status}</p>
-// 					</div>
-// 					<div class="booking-actions">
-//                         <button onclick="updateBookingStatus(${booking.id}, '🏁 Завершена')">Завершить</button>
-//                         <button onclick="updateBookingStatus(${booking.id}, '❌ Отменена')">Отменить</button>
-//                     </div>
-// 			`;
-// 					workingList.appendChild(bookingCard);
-// 				});
-// 			}
-// 			if (endBookings.length === 0) {
-// 				endList.innerHTML = '<p>Записей нет.</p>';
-// 			} else {
-// 				endBookings.forEach(booking => {
-// 					const bookingCard = document.createElement('div');
-// 					bookingCard.className = 'booking-card';
-// 					bookingCard.innerHTML = `
-// 					<div class="booking-info">
-// 						<p><strong>ID записи:</strong> ${booking.id}</p>
-// 						<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
-// 						<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
-// 						<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
-// 						<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
-// 						<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
-// 						<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
-// 						<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
-// 						<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
-// 						<p><strong>Статус:</strong> ${booking.status}</p>
-// 					</div>
-// 			`;
-// 					endList.appendChild(bookingCard);
-// 				});
-// 			}
-
-
-// 		})
-// 		.catch(error => {
-// 			console.error('Ошибка загрузки записей:', error);
-// 			document.getElementById('pending-list').innerHTML = '<p>Не удалось загрузить записи.</p>';
-// 			document.getElementById('confirmed-list').innerHTML = '<p>Не удалось загрузить записи.</p>';
-// 			document.getElementById('working-list').innerHTML = '<p>Не удалось загрузить записи.</p>';
-// 			document.getElementById('end-list').innerHTML = '<p>Не удалось загрузить записи.</p>';
-// 			document.getElementById('canceled-list').innerHTML = '<p>Не удалось загрузить записи.</p>';
-
-// 		});
-// }
-
-// // Активация первой вкладки заказов
-// function activateOrderTab(defaultTab) {
-// 	const tabs = document.querySelectorAll('.tab');
-// 	const tabContents = document.querySelectorAll('#orders-content .tab-content'); // Ограничиваем только вложенными вкладками
-// 	tabs.forEach(t => t.classList.remove('active'));
-// 	tabContents.forEach(c => {
-// 		c.classList.remove('active');
-// 		c.style.display = 'none';
-// 	});
-// 	const activeTab = document.querySelector(`.tab[data-tab="${defaultTab}"]`);
-// 	const activeContent = document.getElementById(defaultTab);
-// 	if (activeTab && activeContent) {
-// 		activeTab.classList.add('active');
-// 		activeContent.classList.add('active');
-// 		activeContent.style.display = 'block';
-// 		console.log(`Активирована внутренняя вкладка: ${defaultTab}, видимость: ${activeContent.style.display}`);
-// 	}
-// }
-// Активация первой вкладки заказов
-function activateOrderTab(defaultTab) {
-	const tabs = document.querySelectorAll('.tab');
-	const tabContents = document.querySelectorAll('.tab-content');
-	tabs.forEach(t => t.classList.remove('active'));
-	tabContents.forEach(c => {
-		c.classList.remove('active');
-		c.style.display = 'none';
-	});
-	const activeTab = document.querySelector(`.tab[data-tab="${defaultTab}"]`);
-	const activeContent = document.getElementById(defaultTab);
-	if (activeTab && activeContent) {
-		activeTab.classList.add('active');
-		activeContent.classList.add('active');
-		activeContent.style.display = 'block';
-	}
-}
 
 // Загрузка статистики
 async function loadDashboard() {
 	try {
-		const response = await fetch('/api/admin/stats');
+		const response = await fetch('http://85.192.61.46:8080/api/admin/stats');
 		if (!response.ok) throw new Error('Ошибка загрузки статистики');
 		const data = await response.json();
 
@@ -497,8 +311,6 @@ async function deleteUser(userId) {
 		console.error('Error:', error);
 	}
 }
-
-
 // Функция для обновления статуса записи (должна быть определена)
 function updateBookingStatus(bookingId, status) {
 	fetch(`/api/bookings/${bookingId}`, {
