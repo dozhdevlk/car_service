@@ -79,7 +79,21 @@ header {
 	gap: 20px;
 	justify-content: space-between;
 }
+.partner-image-container {
+	width: 100px;
+	height: 100px;
+	min-width: 100px;
+	overflow: hidden;
+	border-radius: 8px;
+	border: 1px solid #eee;
+}
 
+.partner-image {
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	transition: transform 0.3s ease;
+}
 /* Блок с информацией о партнере */
 .partner-details {
 	background-color: #fff;
