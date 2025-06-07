@@ -294,7 +294,6 @@ document.addEventListener('DOMContentLoaded', () => {
 					} else {
 						showBookingMessage('Запись успешно создана! Ожидайте подтверждения.', 'success');
 						document.getElementById('booking-form').reset();
-						loadBookings();
 					}
 				})
 				.catch(error => {
