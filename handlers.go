@@ -1003,6 +1003,7 @@ func updateBookingHandler(w http.ResponseWriter, r *http.Request) {
 
 		message = strings.ReplaceAll(message, "(", "\\(")
 		message = strings.ReplaceAll(message, ")", "\\)")
+		message = strings.ReplaceAll(message, "-", " ")
 
 		SendTelegramNotification(db, booking.UserID, message)
 	}
