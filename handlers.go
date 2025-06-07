@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
+	"strings"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -999,6 +1000,10 @@ func updateBookingHandler(w http.ResponseWriter, r *http.Request) {
 			booking.BookingTime,
 			booking.Status,
 		)
+
+		message = strings.ReplaceAll(message, "(", "\\(")
+		message = strings.ReplaceAll(message, ")", "\\)")
+
 		SendTelegramNotification(db, booking.UserID, message)
 	}
 
