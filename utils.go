@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strings"
 	"time"
 )
 
@@ -116,4 +117,18 @@ func parseDate(dateStr string) time.Time {
 		log.Fatal("Ошибка парсинга даты: ", err)
 	}
 	return parsedDate
+}
+
+func EscapeMarkdownV2(text string) string {
+	// Список всех символов, которые нужно экранировать в MarkdownV2
+	specialChars := "_*[]()~`>#+-=|{}.!"
+
+	var replacer strings.Builder
+	for _, r := range text {
+		if strings.ContainsRune(specialChars, r) {
+			replacer.WriteRune('\\') // экранирующий слэш
+		}
+		replacer.WriteRune(r)
+	}
+	return replacer.String()
 }

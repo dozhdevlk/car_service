@@ -10,7 +10,6 @@ import (
 	"os"
 	"path/filepath"
 	"strconv"
-	"strings"
 
 	"github.com/google/uuid"
 	"github.com/gorilla/mux"
@@ -991,7 +990,7 @@ func updateBookingHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("Ошибка при получении информации о записи:", err)
 	} else {
-		message := fmt.Sprintf(
+		message := EscapeMarkdownV2(fmt.Sprintf(
 			"Обновление записи №%d:\n\n🚗*СТО:* %s\n📍*Адрес:* %s\n📅*Дата:* %s\n🕒*Время:* %s\n\n*Новый статус: %s*",
 			booking.ID,
 			booking.PartnerName,
@@ -999,11 +998,7 @@ func updateBookingHandler(w http.ResponseWriter, r *http.Request) {
 			booking.BookingDate,
 			booking.BookingTime,
 			booking.Status,
-		)
-
-		message = strings.ReplaceAll(message, "(", "\\(")
-		message = strings.ReplaceAll(message, ")", "\\)")
-		message = strings.ReplaceAll(message, "-", " ")
+		))
 
 		SendTelegramNotification(db, booking.UserID, message)
 	}
