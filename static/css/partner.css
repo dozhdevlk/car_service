@@ -9,7 +9,6 @@ body {
 /* Контейнер для основной страницы */
 .container {
 	max-width: 1200px;
-	min-width: 600px;
 	display: flex;
 	flex-direction: column;
 	width: 100%;
