@@ -1,0 +1,172 @@
+header {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	align-items: center;
+	margin: 0 auto;
+	padding-bottom: 20px;
+	border-bottom: 1px solid #eee;
+	width: 100%;
+	box-sizing: border-box;
+}
+
+.error-message {
+	color: red;
+	display: none;
+	margin-top: 5px;
+}
+
+.success-message {
+	color: green;
+	display: none;
+	margin-top: 5px;
+}
+
+.time-selectors {
+	display: flex;
+	gap: 10px;
+}
+
+.service-form {
+	margin-top: 20px;
+	padding: 15px;
+	border: 1px solid #ddd;
+	border-radius: 5px;
+}
+
+.form-group input,
+.form-group select {
+	width: 100%;
+	padding: 8px;
+	margin-top: 5px;
+	box-sizing: border-box;
+}
+
+.manage-btn {
+	padding: 10px 20px;
+	margin-top: 20px;
+	margin: 5px;
+	background-color: #007bff;
+	color: white;
+	border: none;
+	border-radius: 5px;
+	text-decoration: none;
+	display: none;
+	height: 30px;
+}
+
+.manage-btn:hover {
+	background-color: #0056b3;
+}
+
+pre#partner-working-hours {
+	font-family: none;
+}
+
+.partner-page-container {
+	display: flex;
+	flex-wrap: wrap;
+	width: 100%;
+	background-color: #fff;
+	box-sizing: border-box;
+}
+
+.container {
+	max-width: 1200px;
+	min-width: 600px;
+	width: 100%;
+	margin: 0 auto;
+	padding: 20px;
+	box-sizing: border-box;
+}
+
+body {
+	margin: 0;
+	padding: 0;
+	width: 100%;
+}
+
+
+.partner-details {
+	flex: 2;
+	/* 2 части от 3 для информации о партнере */
+	min-width: 300px;
+	/* Минимальная ширина */
+}
+
+.right-sidebar {
+	height: 100%;
+	background-color: #f4f4f4;
+	padding: 20px;
+	box-sizing: border-box;
+	display: flex;
+	flex-direction: column;
+	border-radius: 8px;
+}
+
+.right-sidebar>* {
+	flex: 1;
+}
+
+.booking-form-container,
+.services-section {
+	align-items: center;
+	margin-top: 20px;
+	width: 100%;
+}
+
+.announcements-section {
+	margin-top: 30px;
+	width: 100%;
+}
+
+.announcements-container {
+	display: flex;
+	justify-content: space-between;
+	gap: 20px;
+	flex-wrap: wrap;
+	/* Чтобы блоки не выходили за пределы */
+}
+
+.announcement-card {
+	width: 48%;
+	/* Каждый блок займет половину ширины контейнера */
+	background-color: #f4f4f4;
+	padding: 20px;
+	border-radius: 8px;
+	box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+	box-sizing: border-box;
+}
+
+.announcement-card img {
+	width: 100%;
+	height: auto;
+	border-radius: 8px;
+}
+
+.announcement-card h3 {
+	margin-top: 10px;
+	font-size: 1.2rem;
+}
+
+.announcement-card p {
+	margin-top: 10px;
+	font-size: 1rem;
+	color: #333;
+}
+
+.back-btn 
+{
+	padding: 10px 20px;
+	margin-top: 20px;
+	margin: 5px;
+	background: #4CAF50;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+	transition: background 0.3s;
+	display: inline-block;
+	height: 30px;
+	min-width: 100px;
+	line-height: 30px;
+}

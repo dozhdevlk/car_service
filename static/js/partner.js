@@ -1,6 +1,9 @@
 document.addEventListener('DOMContentLoaded', () => {
-	const pathSegments = window.location.pathname.split('/').filter(segment => segment);
-	const partnerId = pathSegments[pathSegments.length - 1];
+	// !const pathSegments = window.location.pathname.split('/').filter(segment => segment);
+	// const partnerId = pathSegments[pathSegments.length - 1];
+
+	const partnerId = 3
+
 	const dateInput = document.getElementById('booking-date');
 	const timeSelect = document.getElementById('booking-time'); // Один список для времени
 
@@ -179,7 +182,6 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 			.catch(error => {
 				console.error('Ошибка проверки роли или владения:', error);
-				// Если пользователь не авторизован или произошла ошибка, кнопка остаётся скрытой
 			});
 	}
 
@@ -262,8 +264,6 @@ document.addEventListener('DOMContentLoaded', () => {
 				return;
 			}
 
-
-
 			// Дополнительная проверка: выбранное время не в прошлом
 			const selectedDateTime = new Date(bookingDate);
 			selectedDateTime.setHours(parseInt(bookingTime.split(":")[0]), parseInt(bookingTime.split(":")[1]));
@@ -320,68 +320,4 @@ document.addEventListener('DOMContentLoaded', () => {
 		messageElement.style.display = 'block';
 		setTimeout(() => { messageElement.style.display = 'none'; }, 5000);
 	}
-
-
-
 });
-
-// Загрузка записей для дашборда
-function loadBookings() {
-	fetch('/api/bookings')
-		.then(response => response.json())
-		.then(bookings => {
-			const bookingsList = document.getElementById('bookings-list');
-			bookingsList.innerHTML = ' ';
-
-			if (bookings.length === 0) {
-				bookingsList.innerHTML = '<p>Записей нет.</p>';
-				return;
-			}
-
-			bookings.forEach(booking => {
-				const bookingCard = document.createElement('div');
-				bookingCard.className = 'booking-card';
-				bookingCard.innerHTML = `
-                    <div class="booking-info">
-                        <p><strong>ID пользователя:</strong> ${booking.user_id}</p>
-                        <p><strong>Дата:</strong> ${booking.booking_date}</p>
-                        <p><strong>Время:</strong> ${booking.booking_time}</p>
-                        <p><strong>Статус:</strong> ${booking.status}</p>
-                    </div>
-                    <div class="booking-actions">
-                        <button onclick="updateBookingStatus(${booking.id}, 'confirmed')">Подтвердить</button>
-                        <button onclick="updateBookingStatus(${booking.id}, 'canceled')">Отменить</button>
-                    </div>
-                `;
-				bookingsList.appendChild(bookingCard);
-			});
-		})
-		.catch(error => {
-			console.error('Ошибка загрузки записей:', error);
-			document.getElementById('bookings-list').innerHTML = '<p>Не удалось загрузить записи.</p>';
-		});
-}
-
-// Обновление статуса записи
-function updateBookingStatus(bookingId, status) {
-	fetch(`/api/bookings/${bookingId}`, {
-		method: 'PUT',
-		headers: {
-			'Content-Type': 'application/json',
-		},
-		body: JSON.stringify({ status }),
-	})
-		.then(response => response.json())
-		.then(data => {
-			if (data.error) {
-				alert(data.error);
-			} else {
-				alert(`Запись успешно ${status === 'confirmed' ? 'подтверждена' : 'отменена'}!`);
-				loadBookings();
-			}
-		})
-		.catch(error => {
-			console.error('Ошибка обновления статуса:', error);
-			alert('Не удалось обновить статус записи.');
-		});
-}

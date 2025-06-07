@@ -174,7 +174,7 @@ footer {
 	display: inline-block;
 	height: 30px;
 	min-width: 180px;
-}
+} 
 
 /* Для мобильных устройств */
 @media (max-width: 768px) {
