@@ -62,6 +62,8 @@ func SendTelegramNotification(db *sql.DB, userID int, message string) {
 	}
 
 	msg := tgbotapi.NewMessage(chatID, message)
+	msg.ParseMode = tgbotapi.ModeMarkdownV2
+
 	if _, err := bot.Send(msg); err != nil {
 		log.Println("Ошибка при отправке Telegram-сообщения:", err)
 	}
