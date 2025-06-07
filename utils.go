@@ -121,7 +121,7 @@ func parseDate(dateStr string) time.Time {
 
 func EscapeMarkdownV2(text string) string {
 	// Список всех символов, которые нужно экранировать в MarkdownV2
-	specialChars := "_*[]()~`>#+-=|{}.!"
+	specialChars := "_[]()~`>#+-=|{}.!"
 
 	var replacer strings.Builder
 	for _, r := range text {
