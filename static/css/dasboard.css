@@ -1,17 +1,16 @@
-/* General Styles */
+
 body {
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
 	background-color: #f4f4f4;
 }
-
-.admin-container {
+.main-container {
 	display: flex;
 	height: 100vh;
 }
 
-.admin-sidebar {
+.dashboard-sidebar {
 	width: 240px;
 	background-color: #333;
 	color: #fff;
@@ -19,34 +18,33 @@ body {
 	flex-shrink: 0;
 }
 
-.admin-sidebar ul {
+.dashboard-sidebar ul {
 	list-style: none;
 	padding: 0;
 }
 
-.admin-sidebar ul li {
+.dashboard-sidebar ul li {
 	padding: 15px;
 	text-align: center;
 }
 
-.admin-sidebar ul li a {
+.dashboard-sidebar ul li a {
 	color: #fff;
 	text-decoration: none;
 	display: block;
 }
 
-.admin-sidebar ul li a:hover,
-.admin-sidebar ul li a.active {
+.dashboard-sidebar ul li a:hover,
+.dashboard-sidebar ul li a.active {
 	background-color: #007bff;
 }
 
-.admin-content {
+.dashboard-content {
 	flex-grow: 1;
 	padding: 20px;
 	overflow-y: auto;
 }
 
-/* Tab Styles */
 .tabs {
 	display: flex;
 	border-bottom: 1px solid #ccc;
@@ -66,7 +64,6 @@ body {
 	color: #007bff;
 }
 
-/* Form Styles */
 label {
 	font-weight: bold;
 }
@@ -119,89 +116,33 @@ button:hover {
 	padding: 5px 10px;
 }
 
-/* Responsive Styles */
 @media (max-width: 768px) {
-	.admin-container {
+	.main-container {
 		flex-direction: column;
 	}
 
-	.admin-sidebar {
+	.dashboard-sidebar {
 		width: 100%;
 		height: auto;
 		padding-top: 10px;
 	}
 
-	.admin-sidebar ul li {
+	.dashboard-sidebar ul li {
 		padding: 10px;
 	}
-
-	.admin-content {
+	.dashboard-content {
 		padding: 10px;
 	}
-
 	.tabs {
 		flex-direction: column;
 	}
-
 	.tab {
 		text-align: center;
 	}
-
 	.booking-card {
 		padding: 10px;
 	}
-
 	button {
 		padding: 12px;
 	}
-}
-
-@media (max-width: 480px) {
-	.tabs {
-		flex-direction: column;
-		margin-bottom: 15px;
-	}
-
-	.tab {
-		padding: 8px;
-		font-size: 14px;
-	}
-
-	input[type="text"],
-	select {
-		padding: 6px;
-		font-size: 14px;
-	}
-
-	button {
-		padding: 12px;
-		font-size: 14px;
-	}
-}
-
-.metrics-grid {
-	display: flex;
-	justify-content: space-between;
-	margin-bottom: 30px;
-}
-
-.metric-card {
-	background-color: #fff;
-	border: 1px solid #ddd;
-	padding: 20px;
-	border-radius: 5px;
-	text-align: center;
-	width: 30%;
-	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-	cursor: pointer;
-	transition: background-color 0.3s;
-}
-
-.metric-card:hover {
-	background-color: #f1f1f1;
-}
-
-.metric-card span {
-	font-weight: bold;
-	font-size: 18px;
 }

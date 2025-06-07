@@ -96,7 +96,7 @@ function applyFilters(status = '', searchId = '', searchPhone = '') {
 	const filteredBookings = allBookings.filter(booking => {
 		const isStatusMatch = ((status === 'all') || (booking.status === status)); // Фильтрация по статусу
 		const isIdMatch = searchId ? booking.id.toString().includes(searchId) : true; // Фильтрация по ID
-		const isPhoneMatch = searchPhone ? booking.partner_phone.includes(searchPhone) : true; // Фильтрация по телефону
+		const isPhoneMatch = searchPhone ? booking.user_phone.includes(searchPhone) : true; // Фильтрация по телефону
 
 		return isStatusMatch && isIdMatch && isPhoneMatch; // Все условия должны совпасть
 	});
@@ -162,7 +162,7 @@ function getActionButton(status, bookingId) {
 // Загрузка статистики
 async function loadDashboard() {
 	try {
-		const response = await fetch('http://85.192.61.46:8080/api/admin/stats');
+		const response = await fetch('/api/admin/stats');
 		if (!response.ok) throw new Error('Ошибка загрузки статистики');
 		const data = await response.json();
 
@@ -313,7 +313,7 @@ async function deleteUser(userId) {
 }
 // Функция для обновления статуса записи (должна быть определена)
 function updateBookingStatus(bookingId, status) {
-	fetch(`/api/bookings/${bookingId}`, {
+	fetch(`/bookings/${bookingId}`, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',

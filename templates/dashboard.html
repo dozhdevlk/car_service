@@ -5,228 +5,56 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Панель управления владельца</title>
-	<link rel="stylesheet" href="/static/css/style.css">
-	<style>
-		body {
-			font-family: Arial, sans-serif;
-			margin: 0;
-			padding: 0;
-			background-color: #f4f4f4;
-		}
-
-		.container {
-			display: flex;
-			min-height: 100vh;
-			width: 100%;
-			/* Ensure the container takes full width */
-		}
-
-		.dashboard-sidebar {
-			width: 250px;
-			background-color: #2c3e50;
-			color: white;
-			padding: 20px;
-			position: fixed;
-			/* Fixed sidebar */
-			height: 100%;
-			/* Full height */
-			top: 0;
-			left: 0;
-		}
-
-		.dashboard-sidebar ul {
-			list-style: none;
-			padding: 0;
-		}
-
-		.dashboard-sidebar ul li {
-			margin: 10px 0;
-		}
-
-		.dashboard-sidebar ul li a {
-			color: white;
-			text-decoration: none;
-			display: block;
-			padding: 10px;
-			border-radius: 5px;
-		}
-
-		.dashboard-sidebar ul li a.active,
-		.dashboard-sidebar ul li a:hover {
-			background-color: #3498db;
-		}
-
-		.content {
-			margin-left: 270px;
-			/* Adjusted to make space for sidebar */
-			padding: 20px;
-			width: calc(100% - 270px);
-			/* Adjust content to take remaining width */
-		}
-
-		.main-tab-content {
-			background: white;
-			padding: 20px;
-			border-radius: 5px;
-			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-			display: none;
-		}
-
-		.main-tab-content.active {
-			display: block;
-		}
-
-		.tabs {
-			display: flex;
-			border-bottom: 1px solid #ccc;
-			margin-bottom: 20px;
-		}
-
-		.tab {
-			padding: 10px 20px;
-			cursor: pointer;
-			font-weight: bold;
-			border-bottom: 3px solid transparent;
-			transition: border-bottom 0.3s;
-		}
-
-		.tab.active {
-			border-bottom: 3px solid #007bff;
-			color: #007bff;
-		}
-
-		.moderation-table {
-			width: 100%;
-			border-collapse: collapse;
-			margin-top: 20px;
-		}
-
-		.moderation-table th,
-		.moderation-table td {
-			padding: 10px;
-			border: 1px solid #ddd;
-			text-align: left;
-			max-width: 500px;
-		}
-
-		.moderation-table th {
-			background-color: #3498db;
-			color: white;
-		}
-
-		.moderation-table tr:nth-child(even) {
-			background-color: #f9f9f9;
-		}
-
-		.moderation-table button {
-			padding: 5px 10px;
-			border: none;
-			border-radius: 3px;
-			cursor: pointer;
-		}
-
-		.moderation-table button.delete {
-			background-color: #e74c3c;
-			color: white;
-		}
-
-		.moderation-table button:hover {
-			opacity: 0.9;
-		}
-
-		.service-form {
-			margin-bottom: 20px;
-		}
-
-		.service-form label {
-			display: block;
-			margin-bottom: 5px;
-			font-weight: bold;
-		}
-
-		.service-form input,
-		.service-form button {
-			padding: 8px;
-			margin-bottom: 10px;
-			width: 200px;
-		}
-
-		.service-form button {
-			background-color: #3498db;
-			color: white;
-			border: none;
-			border-radius: 3px;
-			cursor: pointer;
-		}
-
-		.service-form button:hover {
-			background-color: #2980b9;
-		}
-
-		.error-message {
-			color: red;
-			display: none;
-		}
-
-		.success-message {
-			color: green;
-			display: none;
-		}
-
-	</style>
+	<link rel="stylesheet" href="/static/css/dasboard.css">
+	<!-- <link rel="stylesheet" href="/static/css/style.css"> -->
 </head>
 
 <body>
-	<header>
+	<!-- <header>
 		<h1>Панель управления - Сервис <span id="partner-id"></span></h1>
 		<a href="/" class="back-btn">Вернуться на главную</a>
-	</header>
-	<div class="container">
+	</header> -->
+	<div class="main-container">
 		<nav class="dashboard-sidebar">
 			<ul>
-				<li><a href="#orders" class="tab-link active" data-tab="orders-content">Записи</a></li>
+				<li><a href="#orders" class="tab-link" data-tab="orders-content">Записи</a></li>
 				<li><a href="#services" class="tab-link" data-tab="services-content">Услуги</a></li>
 				<li><a href="#change" class="tab-link" data-tab="change-content">Пользователи</a></li>
 				<li><a href="#announcements" class="tab-link" data-tab="announcements-content">Объявления</a></li>
 			</ul>
 		</nav>
 
-		<div class="content">
+		<div class="dashboard-content">
 			<div id="orders-content" class="main-tab-content" style="display: block;">
 				<h2>Записи</h2>
 				<div class="dashboard-container">
-					<nav class="tabs">
-						<div class="tab active" data-tab="pending">Ожидающие</div>
-						<div class="tab" data-tab="confirmed">Подтвержденные</div>
-						<div class="tab" data-tab="working">Записи в работе</div>
-						<div class="tab" data-tab="end">Завершенные записи</div>
-						<div class="tab" data-tab="canceled">Отмененные</div>
-					</nav>
-	
-					<div id="pending" class="order-tab-content active">
-						<h2>Ожидающие записи</h2>
-						<div id="pending-list"></div>
+					<div>
+						<label for="status-filter">Выберите статус:</label>
+						<select id="status-filter">
+							<option value="all">Все</option>
+							<option value="⏳ Ожидает подтверждения">Ожидающие</option>
+							<option value="✅ Подтверждена">Подтвержденные</option>
+							<option value="🔧 В работе">Записи в работе</option>
+							<option value="🏁 Завершена">Завершенные записи</option>
+							<option value="❌ Отменена">Отмененные</option>
+						</select>
 					</div>
-					<div id="confirmed" class="order-tab-content">
-						<h2>Подтвержденные записи</h2>
-						<div id="confirmed-list"></div>
+
+					<div>
+						<label for="search-id">Поиск по номеру записи (ID):</label>
+						<input type="text" id="search-id" placeholder="Введите ID записи" />
 					</div>
-					<div id="working" class="order-tab-content">
-						<h2>Записи в работе</h2>
-						<div id="working-list"></div>
+					<div>
+						<label for="search-phone">Поиск по номеру телефона клиента:</label>
+						<input type="text" id="search-phone" placeholder="Введите номер телефона" />
 					</div>
-					<div id="end" class="order-tab-content">
-						<h2>Завершенные записи</h2>
-						<div id="end-list"></div>
-					</div>
-					<div id="canceled" class="order-tab-content">
-						<h2>Отмененные записи</h2>
-						<div id="canceled-list"></div>
-					</div>
+					<button id="search-button">Поиск</button>
+				</div>
+				<div id="all-list" class="booking-list-container">
 				</div>
 			</div>
 
-			<div id="services-content" class="main-tab-content">
+			<div id="services-content" class="main-tab-content" style="display: none;">
 				<h2>Управление услугами</h2>
 				<button id="addServiceBtn" class="btn btn-success mb-3">Добавить услугу</button>
 				<table id="servicesTable" class="table table-striped">
@@ -285,7 +113,7 @@
 				</table>
 			</div>
 
-			<div id="change-content" class="main-tab-content">
+			<div id="change-content" class="main-tab-content" style="display: none;">
 				<h2>Изменить информацию</h2>
 				<div class="service-info">
 					<p>Текущее название сервиса: <span id="current-service-name"></span>
@@ -329,7 +157,7 @@
 			</div>
 
 			<!-- Контент вкладки объявлений -->
-			<div id="announcements-content" class="main-tab-content">
+			<div id="announcements-content" class="main-tab-content" style="display: none;">
 				<h2>Управление объявлениями</h2>
 				<button id="addAnnouncementBtn" class="btn btn-success mb-3">Добавить объявление</button>
 				<table class="moderation-table">

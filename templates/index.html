@@ -117,7 +117,7 @@
 	
 		// Загрузка услуг с сервера
 		function fetchServices() {
-			fetch('/api/offerings')
+			fetch('http://85.192.61.46:8080/api/offerings')
 				.then(response => response.json())
 				.then(services => {
 					allServices = services;
@@ -184,7 +184,6 @@
 		// Инициализация
 		fetchServices();
 	</script>
-	<!-- <script src="/backend/static/js/script.js"></script> -->
 	<footer>
 		<button id="partner-btn" onclick="window.location.href='/partner-register'">
 			Стать нашим партнером
