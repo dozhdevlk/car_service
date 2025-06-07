@@ -313,7 +313,7 @@ async function deleteUser(userId) {
 }
 // Функция для обновления статуса записи (должна быть определена)
 function updateBookingStatus(bookingId, status) {
-	fetch(`/bookings/${bookingId}`, {
+	fetch(`/api/bookings/${bookingId}`, {
 		method: 'PUT',
 		headers: {
 			'Content-Type': 'application/json',

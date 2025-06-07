@@ -124,25 +124,56 @@ button {
 button:hover {
 	background: #45a049;
 }
+
 footer {
-    margin-top: 50px;
-    text-align: center;
-    padding: 20px;
-    border-top: 1px solid #eee;
+	margin-top: 50px;
+	text-align: center;
+	padding: 20px;
+	border-top: 1px solid #eee;
 }
+
 #partner-btn {
-    background: #ff6b00;
-    color: white;
-    padding: 12px 24px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background 0.3s;
+	background: #ff6b00;
+	color: white;
+	padding: 12px 24px;
+	border: none;
+	border-radius: 4px;
+	font-size: 16px;
+	cursor: pointer;
+	transition: background 0.3s;
 }
 
 #partner-btn:hover {
-    background: #e05d00;
+	background: #e05d00;
+}
+
+#services-list {
+	display: grid;
+	grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+	gap: 20px;
+	overflow-y: auto;
+	max-height: 600px;
+}
+
+.service-card {
+	border: 1px solid #ddd;
+	padding: 15px;
+	border-radius: 5px;
+}
+
+.service-btn 
+{
+	padding: 10px 20px;
+	margin-top: 20px;
+	margin: 5px;
+	background: #4CAF50;
+	color: white;
+	text-decoration: none;
+	border-radius: 5px;
+	transition: background 0.3s;
+	display: inline-block;
+	height: 30px;
+	min-width: 180px;
 }
 
 /* Для мобильных устройств */
@@ -159,6 +190,7 @@ footer {
 	.partner-card {
 		flex-direction: column;
 		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.partner-details {
