@@ -9,8 +9,10 @@
 <body>
     <div class="container">
         <header>
-            <h1>Автосервис</h1>
-            <div id="auth-section">
+            <div class="header-title">
+				<h1>Автосервис</h1>
+			</div>
+            <div class="auth-container" id="auth-section">
                 <div id="login-form">
                     <h2>Вход</h2>
                     <form id="loginForm">
@@ -80,7 +82,7 @@
 				</div>
 				
 				<div class="partners-map">
-				  <div id="map" style="width: 100%; height: 600px;"></div>
+				  <div id="map" style = 'width: 100%; height: 600px;'></div>
 				</div>
 			</div>
 			
@@ -117,7 +119,7 @@
 	
 		// Загрузка услуг с сервера
 		function fetchServices() {
-			fetch('http://85.192.61.46:8080/api/offerings')
+			fetch('/api/offerings')
 				.then(response => response.json())
 				.then(services => {
 					allServices = services;

@@ -261,7 +261,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 preset: 'islands#invertedBlueClusterIcons'
             });
 
-            fetch('/api/partners')
+            fetch('http://85.192.61.46:8080/api/partners')
                 .then(res => {
                     if (!res.ok) throw new Error('Ошибка загрузки партнеров');
                     return res.json();
