@@ -320,7 +320,7 @@ func partnerDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		if reviewsBlock.Valid {
 			partner.ReviewsBlock = reviewsBlock.String
 		} else {
-			partner.MapBlock = ""
+			partner.ReviewsBlock = ""
 		}
 
 		// Преобразование данных о working_hours
@@ -350,19 +350,7 @@ func partnerDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]interface{}{
-			"id":            partner.ID,
-			"name":          partner.Name,
-			"address":       partner.Address,
-			"phone":         partner.Phone,
-			"logoPath":      partner.LogoPath.String,
-			"latitude":      partner.Latitude,
-			"longitude":     partner.Longitude,
-			"owner":         partner.Owner,
-			"owner_id":      partner.Owner_id,
-			"description":   partner.Description,
-			"working_hours": partner.WorkingHours, // Добавляем рабочие часы в ответ
-		})
+		json.NewEncoder(w).Encode(partner)
 	case http.MethodPut:
 		// Получаем userID из сессии
 		session, err := store.Get(r, "session")
