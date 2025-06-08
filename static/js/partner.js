@@ -195,6 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				if (data.reviews) {
 					document.getElementById('reviews').innerHTML = data.reviews;
 					document.getElementById('reviews').getElementsByTagName('div')[0].style.width = '100%';
+					document.getElementsByClassName('partner-details')[0].style.width = '60%';
 					document.getElementById('reviews').style.display = 'block';
 				}
 				if (data.map) {
