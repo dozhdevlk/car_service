@@ -302,13 +302,26 @@ func partnerDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	// Обработка в зависимости от метода
 	switch r.Method {
 	case http.MethodGet:
+		var mapBlock sql.NullString
+		var reviewsBlock sql.NullString
+
 		var workingHoursJson []byte
 		err = db.QueryRow(`
 			SELECT s.id, s.name, s.address, s.phone, s.logo_path, s.latitude, s.longitude, u.name as owner_name, s.owner_id, s.description, s.working_hours, s.map, s.reviews
 			FROM services s
 			JOIN users u ON s.owner_id = u.id
 			WHERE s.id = $1 AND s.approved = TRUE
-		`, id).Scan(&partner.ID, &partner.Name, &partner.Address, &partner.Phone, &partner.LogoPath, &partner.Latitude, &partner.Longitude, &partner.Owner, &partner.Owner_id, &partner.Description, &workingHoursJson, &partner.MapBlock, &partner.ReviewsBlock)
+		`, id).Scan(&partner.ID, &partner.Name, &partner.Address, &partner.Phone, &partner.LogoPath, &partner.Latitude, &partner.Longitude, &partner.Owner, &partner.Owner_id, &partner.Description, &workingHoursJson, &mapBlock, &reviewsBlock)
+		if mapBlock.Valid {
+			partner.MapBlock = mapBlock.String
+		} else {
+			partner.MapBlock = ""
+		}
+		if reviewsBlock.Valid {
+			partner.ReviewsBlock = reviewsBlock.String
+		} else {
+			partner.ReviewsBlock = ""
+		}
 
 		// Преобразование данных о working_hours
 		if err == nil && partner.WorkingHours == nil {
