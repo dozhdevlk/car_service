@@ -100,11 +100,12 @@ header {
 	border-radius: 8px;
 	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 	box-sizing: border-box;
-	width: 30%;
+	width: 60%;
 }
 
 .reviews-container {
 	display: none;
+	width: 100%;
 }
 
 iframe {
