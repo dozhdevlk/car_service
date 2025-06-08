@@ -49,7 +49,7 @@ function loadUserInfo() {
 			document.getElementById('client-name').textContent = userInfo.Name;
 			document.getElementById('client-phone').textContent = userInfo.Phone;
 			document.getElementById('client-email').textContent = userInfo.Email;
-			if (user.Tg) {
+			if (userInfo.Tg) {
 				document.getElementById('connectTelegramBtn').style.display = 'none'
 			}
 		})
