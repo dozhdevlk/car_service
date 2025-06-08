@@ -302,7 +302,7 @@ func partnerDetailsHandler(w http.ResponseWriter, r *http.Request) {
 	case http.MethodGet:
 		var workingHoursJson []byte
 		err = db.QueryRow(`
-			SELECT s.id, s.name, s.address, s.phone, s.logo_path, s.latitude, s.longitude, u.name as owner_name, s.owner_id, s.description, s.working_hours
+			SELECT s.id, s.name, s.address, s.phone, s.logo_path, s.latitude, s.longitude, u.name as owner_name, s.owner_id, s.description, s.working_hours, s.map, s.reviews
 			FROM services s
 			JOIN users u ON s.owner_id = u.id
 			WHERE s.id = $1 AND s.approved = TRUE

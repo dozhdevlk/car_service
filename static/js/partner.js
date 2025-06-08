@@ -192,6 +192,14 @@ document.addEventListener('DOMContentLoaded', () => {
 				document.getElementById('partner-address').textContent = data.address;
 				document.getElementById('partner-phone').textContent = data.phone;
 				document.getElementById('partner-description').textContent = data.description || 'Описание отсутствует';
+				if (data.reviews) {
+					document.getElementsByClassName('reviews-container').innerHTML = data.reviews;
+					document.getElementsByClassName('reviews-container').style.display = 'block';
+				}
+				if (data.map) {
+					document.getElementsByClassName('map').innerHTML = data.map;
+					document.getElementsByClassName('map').style.display = 'block';
+				}
 
 				// Отображение рабочих часов
 				if (data.working_hours) {
