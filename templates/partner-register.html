@@ -5,126 +5,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Регистрация автосервиса</title>
-	<link rel="stylesheet" href="../static/css/style.css">
-	<style>
-		.container {
-			max-width: 600px;
-			margin: 0 auto;
-			padding: 20px;
-		}
-
-		header {
-			text-align: center;
-			margin-bottom: 20px;
-		}
-
-		form {
-			display: flex;
-			flex-direction: column;
-			gap: 15px;
-		}
-
-		.form-group {
-			position: relative;
-			margin-bottom: 10px;
-		}
-
-		.form-group label {
-			font-weight: bold;
-			margin-bottom: 5px;
-			display: block;
-		}
-
-		.form-group input {
-			width: 100%;
-			padding: 8px;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			box-sizing: border-box;
-		}
-
-		.address-hint {
-			font-size: 0.8em;
-			color: #666;
-			margin-top: 5px;
-		}
-
-		.suggestions-container {
-			position: absolute;
-			top: 100%;
-			left: 0;
-			right: 0;
-			background-color: white;
-			border: 1px solid #ccc;
-			border-radius: 4px;
-			max-height: 200px;
-			overflow-y: auto;
-			z-index: 1000;
-			box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-			display: none;
-		}
-
-		.suggestion-item {
-			padding: 8px;
-			cursor: pointer;
-		}
-
-		.suggestion-item:hover {
-			background-color: #f0f0f0;
-		}
-
-		.suggestions-container.active {
-			display: block;
-		}
-
-		button {
-			padding: 10px;
-			background-color: #2ecc71;
-			color: white;
-			border: none;
-			border-radius: 4px;
-			cursor: pointer;
-		}
-
-		button:hover {
-			background-color: #27ae60;
-		}
-
-		#logoPreview img {
-			border-radius: 4px;
-		}
-
-		.error-message {
-			color: red;
-			font-size: 0.9em;
-			margin-top: 5px;
-			display: none;
-		}
-
-		.time-selects {
-			display: flex;
-			gap: 5px;
-			align-items: center;
-			margin-top: 5px;
-		}
-
-		.working-day .time-selects {
-			display: none;
-		}
-
-		.checkbox-container {
-			width: 50%;
-			display: flex;
-			align-items: center;
-			gap: 5px;
-			margin-top: 5px;
-		}
-
-		.checkbox-container span {
-			font-size: 14px;
-			width: 70%;
-		}
-	</style>
+	<link rel="stylesheet" href="/static/css/partner-register.css">
 </head>
 
 <body>
@@ -274,7 +155,7 @@
 	</div>
 	<div id="emailError" class="error-message"></div>
 
-	<script src="../static/js/partner-page.js"></script>
+	<script src="/static/js/partner-register.js"></script>
 </body>
 
 </html>

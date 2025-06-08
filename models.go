@@ -31,6 +31,8 @@ type Booking struct {
 	BookingDate    string `json:"booking_date"`
 	BookingTime    string `json:"booking_time"`
 	Status         string `json:"status"`
+	ReviewsBlock   string `json:"reviews"`
+	MapBlock       string `json:"map"`
 }
 
 type Offering struct {

@@ -1,8 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
-	// !const pathSegments = window.location.pathname.split('/').filter(segment => segment);
-	// const partnerId = pathSegments[pathSegments.length - 1];
-
-	const partnerId = 3
+	const pathSegments = window.location.pathname.split('/').filter(segment => segment);
+	const partnerId = pathSegments[pathSegments.length - 1];
 
 	const dateInput = document.getElementById('booking-date');
 	const timeSelect = document.getElementById('booking-time'); // Один список для времени

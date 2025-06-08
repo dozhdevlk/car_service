@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			  console.log(data); 
 
 			try {
-				const response = await fetch('/api/register-partner', {
+				const response = await fetch('http://85.192.61.46:8080/api/register-partner', {
 					method: 'POST',
 					body: formData
 				});
