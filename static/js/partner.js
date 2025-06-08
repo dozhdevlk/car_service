@@ -194,6 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				document.getElementById('partner-description').textContent = data.description || 'Описание отсутствует';
 				if (data.reviews) {
 					document.getElementById('reviews').innerHTML = data.reviews;
+					document.getElementById('reviews').getElementsByTagName('div')[0].style.width = '100%';
 					document.getElementById('reviews').style.display = 'block';
 				}
 				if (data.map) {
