@@ -296,6 +296,8 @@ func partnerDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		Owner_id     int
 		Description  string
 		WorkingHours map[string]map[string]string // Структура для рабочих часов
+		ReviewsBlock string                       `json:"reviews"`
+		MapBlock     string                       `json:"map"`
 	}
 	// Обработка в зависимости от метода
 	switch r.Method {
@@ -306,7 +308,7 @@ func partnerDetailsHandler(w http.ResponseWriter, r *http.Request) {
 			FROM services s
 			JOIN users u ON s.owner_id = u.id
 			WHERE s.id = $1 AND s.approved = TRUE
-		`, id).Scan(&partner.ID, &partner.Name, &partner.Address, &partner.Phone, &partner.LogoPath, &partner.Latitude, &partner.Longitude, &partner.Owner, &partner.Owner_id, &partner.Description, &workingHoursJson)
+		`, id).Scan(&partner.ID, &partner.Name, &partner.Address, &partner.Phone, &partner.LogoPath, &partner.Latitude, &partner.Longitude, &partner.Owner, &partner.Owner_id, &partner.Description, &workingHoursJson, &partner.MapBlock, &partner.ReviewsBlock)
 
 		// Преобразование данных о working_hours
 		if err == nil && partner.WorkingHours == nil {
