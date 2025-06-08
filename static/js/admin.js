@@ -5,20 +5,17 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('new-services-card').addEventListener('click', () => {
 		switchTab('services-content');
 	});
-
+	
 	// Переход на вкладку "Все записи" при клике на карточку "Всего записей"
 	document.getElementById('total-bookings-card').addEventListener('click', () => {
 		switchTab('orders-content');
 	});
-
+	
 	// Переход на вкладку "Пользователи" при клике на карточку "Всего пользователей"
 	document.getElementById('total-users-card').addEventListener('click', () => {
 		switchTab('users-content');
 	});
-	// Инициализация
 	loadDashboard();
-	renderServicesTable();
-	renderUsersTable();
 
 
 
@@ -37,37 +34,38 @@ document.addEventListener('DOMContentLoaded', () => {
 			const tabContent = document.getElementById(tabId);
 			tabContent.style.display = 'block';
 			tabContent.classList.add('active');
-
+			
+			if (tabId === 'services-content') {
+				renderServicesTable();
+			}
+			if (tabId === 'users-content') {
+				renderUsersTable();
+			}
 			if (tabId === 'orders-content') {
 				loadAllBookings();
 			}
 		});
 	});
 
-
-	// Активируем первую вкладку (dashboard) при загрузке
 	const defaultTabLink = document.querySelector('.tab-link');
 	if (defaultTabLink) {
-		defaultTabLink.click(); // Симулируем клик на первой вкладке
+		defaultTabLink.click();
 	}
 
-	// Поиск по ID записи или телефону владельца
 	document.getElementById('search-button').addEventListener('click', () => {
 		const searchId = document.getElementById('search-id').value;
 		const searchPhone = document.getElementById('search-phone').value;
 		const selectedStatus = document.getElementById('status-filter').value;
 
-		applyFilters(selectedStatus, searchId, searchPhone); // Фильтрация записей по ID и телефону
+		applyFilters(selectedStatus, searchId, searchPhone);
 	});
 });
 
 function switchTab(tabId) {
-	// Скрываем все вкладки
 	document.querySelectorAll('.main-tab-content').forEach(tab => {
 		tab.style.display = 'none';
 	});
 
-	// Показываем выбранную вкладку
 	document.getElementById(tabId).style.display = 'block';
 	document.querySelectorAll('.tab-link').forEach(link => {
 		link.classList.remove('active');
@@ -75,7 +73,6 @@ function switchTab(tabId) {
 	document.querySelector(`.tab-link[data-tab="${tabId}"]`).classList.add('active');
 }
 
-// Функция для загрузки всех записей и сохранения их в память
 function loadAllBookings() {
 	fetch('/api/bookings')
 		.then(response => {
@@ -83,8 +80,8 @@ function loadAllBookings() {
 			return response.json();
 		})
 		.then(bookings => {
-			allBookings = bookings; // Сохраняем все записи в памяти
-			applyFilters('all'); // Применяем фильтрацию сразу после загрузки данных
+			allBookings = bookings;
+			applyFilters('all');
 		})
 		.catch(error => {
 			console.error('Ошибка загрузки записей:', error);
@@ -94,21 +91,19 @@ function loadAllBookings() {
 
 function applyFilters(status = '', searchId = '', searchPhone = '') {
 	const filteredBookings = allBookings.filter(booking => {
-		const isStatusMatch = ((status === 'all') || (booking.status === status)); // Фильтрация по статусу
-		const isIdMatch = searchId ? booking.id.toString().includes(searchId) : true; // Фильтрация по ID
-		const isPhoneMatch = searchPhone ? booking.user_phone.includes(searchPhone) : true; // Фильтрация по телефону
+		const isStatusMatch = ((status === 'all') || (booking.status === status));
+		const isIdMatch = searchId ? booking.id.toString().includes(searchId) : true;
+		const isPhoneMatch = searchPhone ? booking.user_phone.includes(searchPhone) : true;
 
-		return isStatusMatch && isIdMatch && isPhoneMatch; // Все условия должны совпасть
+		return isStatusMatch && isIdMatch && isPhoneMatch;
 	});
 
-	// Обновляем отображение записей
 	updateTabContent(filteredBookings);
 }
 
-// Функция для обновления контента вкладки
 function updateTabContent(bookings) {
 	const list = document.getElementById('all-list');
-	list.innerHTML = ''; // Очищаем текущий контент
+	list.innerHTML = '';
 
 	if (bookings.length === 0) {
 		list.innerHTML = '<p>Записей не найдено.</p>';
@@ -155,11 +150,10 @@ function getActionButton(status, bookingId) {
                 <button onclick="updateBookingStatus(${bookingId}, '🏁 Завершена')">Завершить</button>
             `;
 		default:
-			return ''; // Для других статусов кнопки не отображаются
+			return '';
 	}
 }
 
-// Загрузка статистики
 async function loadDashboard() {
 	try {
 		const response = await fetch('/api/admin/stats');
@@ -174,7 +168,6 @@ async function loadDashboard() {
 	}
 }
 
-// Таблица сервисов
 async function renderServicesTable() {
 	try {
 		const response = await fetch('/api/admin/services');
@@ -215,7 +208,6 @@ async function renderServicesTable() {
 	}
 }
 
-// Одобрение сервиса
 async function approveService(serviceId, flag) {
 	try {
 		const response = await fetch('/api/admin/approve-service', {
@@ -253,7 +245,6 @@ async function disapproveService(serviceId) {
 	}
 }
 
-// Таблица пользователей
 async function renderUsersTable() {
 	try {
 		const response = await fetch('/api/admin/users');
@@ -293,7 +284,7 @@ async function renderUsersTable() {
 		console.error('Error:', error);
 	}
 }
-// удаление пользователя
+
 async function deleteUser(userId) {
 	try {
 		const response = await fetch(`/api/admin/delete-user/${userId}`, {
@@ -311,7 +302,7 @@ async function deleteUser(userId) {
 		console.error('Error:', error);
 	}
 }
-// Функция для обновления статуса записи (должна быть определена)
+
 function updateBookingStatus(bookingId, status) {
 	fetch(`/api/bookings/${bookingId}`, {
 		method: 'PUT',
