@@ -193,12 +193,12 @@ document.addEventListener('DOMContentLoaded', () => {
 				document.getElementById('partner-phone').textContent = data.phone;
 				document.getElementById('partner-description').textContent = data.description || 'Описание отсутствует';
 				if (data.reviews) {
-					document.getElementsByClassName('reviews-container').innerHTML = data.reviews;
-					document.getElementsByClassName('reviews-container').style.display = 'block';
+					document.getElementById('reviews').innerHTML = data.reviews;
+					document.getElementById('reviews').style.display = 'block';
 				}
 				if (data.map) {
-					document.getElementsByClassName('map').innerHTML = data.map;
-					document.getElementsByClassName('map').style.display = 'block';
+					document.getElementById('map').innerHTML = data.map;
+					document.getElementById('map').style.display = 'block';
 				}
 
 				// Отображение рабочих часов

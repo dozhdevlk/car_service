@@ -289,7 +289,7 @@ func partnerDetailsHandler(w http.ResponseWriter, r *http.Request) {
 		Name         string                       `json:"name"`
 		Address      string                       `json:"address"`
 		Phone        string                       `json:"phone"`
-		LogoPath     sql.NullString               `json:"logoPath"`
+		LogoPath     string                       `json:"logoPath"`
 		Latitude     float64                      `json:"latitude"`
 		Longitude    float64                      `json:"longitude"`
 		Owner        string                       `json:"owner"`
