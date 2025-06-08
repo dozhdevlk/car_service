@@ -105,11 +105,14 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var user User
+	var tg sql.NullString
 	err := db.QueryRow(`
-		SELECT id, name, email, phone, role
+		SELECT id, name, email, phone, role, telegram_chat_id
 		FROM users
 		WHERE id = $1
-	`, userID).Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.Role)
+	`, userID).Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.Role, &tg)
+
+	user.Tg = tg.String
 
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)

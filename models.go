@@ -7,6 +7,7 @@ type User struct {
 	Phone        string
 	PasswordHash string
 	Role         string
+	Tg           string
 }
 
 type Service struct {
