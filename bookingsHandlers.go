@@ -95,6 +95,23 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Только клиенты могут создавать бронирования", http.StatusForbidden)
 		return
 	}
+
+	var activeBookingCount int
+	err = db.QueryRow(`
+		SELECT COUNT(*) FROM bookings 
+		WHERE partner_id = $1 
+		AND user_id = $2 
+		AND status IN ('⏳ Ожидает подтверждения', '✅ Подтверждена', '🔧 В работе')
+	`, booking.PartnerID, userID).Scan(&activeBookingCount)
+	if err != nil {
+		http.Error(w, "Ошибка проверки существующих записей", http.StatusInternalServerError)
+		return
+	}
+	if activeBookingCount > 0 {
+		http.Error(w, "У вас уже есть активная запись для этого автосервиса", http.StatusConflict)
+		return
+	}
+
 	var existingBooking int
 	err = db.QueryRow(`
 		SELECT COUNT(*) FROM bookings 
