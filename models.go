@@ -48,6 +48,22 @@ type PartnerOffering struct {
 	ImageURL   string
 }
 
+type Partner struct {
+	ID           int                          `json:"id"`
+	Name         string                       `json:"name"`
+	Address      string                       `json:"address"`
+	Phone        string                       `json:"phone"`
+	LogoPath     string                       `json:"logoPath"`
+	Latitude     float64                      `json:"latitude"`
+	Longitude    float64                      `json:"longitude"`
+	Owner        string                       `json:"owner"`
+	Owner_id     int                          `json:"owner_id "`
+	Description  string                       `json:"description"`
+	WorkingHours map[string]map[string]string `json:"working_hours"`
+	ReviewsBlock string                       `json:"reviews"`
+	MapBlock     string                       `json:"map"`
+}
+
 // Структура для ответа API
 type OfferingResponse struct {
 	ID       int                   `json:"id"`
