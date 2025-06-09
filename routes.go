@@ -47,7 +47,7 @@ func setupRoutes(r *mux.Router) {
 	r.HandleFunc("/api/admin/approve-service", adminApproveServiceHandler).Methods("POST")
 	r.HandleFunc("/api/admin/disapprove-service", adminDisApproveServiceHandler).Methods("POST")
 	r.HandleFunc("/api/admin/users", adminUsersHandler).Methods("GET")
-	r.HandleFunc("/api/admin/delete-user/{id}", deleteUser).Methods("DELETE")
+	r.HandleFunc("/api/admin/delete-user/{id}", adminDeleteUserHandler).Methods("DELETE")
 	//telegram
 	r.HandleFunc("/api/telegram/init", HandleInitTelegram).Methods("POST")
 	//static files

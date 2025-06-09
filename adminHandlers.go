@@ -238,7 +238,7 @@ func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(users)
 }
 
-func deleteUser(w http.ResponseWriter, r *http.Request) {
+func adminDeleteUserHandler(w http.ResponseWriter, r *http.Request) {
 	session, err := store.Get(r, "session")
 	if err != nil {
 		log.Printf("Ошибка получения сессии: %v", err)
