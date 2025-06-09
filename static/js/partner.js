@@ -296,8 +296,9 @@ document.addEventListener('DOMContentLoaded', () => {
 			})
 				.then(response => {
 					if (!response.ok) {
-						const errorText = response.text();
-						throw new Error(errorText);
+						return response.text().then(errorText => {
+							throw new Error(errorText);
+						});
 					}
 					return response.json();
 				})
@@ -306,27 +307,27 @@ document.addEventListener('DOMContentLoaded', () => {
 					document.getElementById('booking-form').reset();
 					console.log('Успех:', data);
 				})
-			.catch(error => {
-				console.error('Ошибка отправки записи:', error.message);
-				showBookingMessage('Не удалось создать запись. Попробуйте снова.', 'error');
-			});
-	});
+				.catch(error => {
+					console.error('Ошибка отправки записи:', error.message);
+					showBookingMessage('Не удалось создать запись. Попробуйте снова.', 'error');
+				});
+		});
 	}
 
-// Функции для отображения сообщений
-function showBookingMessage(message, type) {
-	const messageElement = document.getElementById('booking-message');
-	messageElement.textContent = message;
-	messageElement.className = type === 'error' ? 'error-message' : 'success-message';
-	messageElement.style.display = 'block';
-	setTimeout(() => { messageElement.style.display = 'none'; }, 5000);
-}
+	// Функции для отображения сообщений
+	function showBookingMessage(message, type) {
+		const messageElement = document.getElementById('booking-message');
+		messageElement.textContent = message;
+		messageElement.className = type === 'error' ? 'error-message' : 'success-message';
+		messageElement.style.display = 'block';
+		setTimeout(() => { messageElement.style.display = 'none'; }, 5000);
+	}
 
-function showServiceMessage(message, type) {
-	const messageElement = document.getElementById('service-message');
-	messageElement.textContent = message;
-	messageElement.className = type === 'error' ? 'error-message' : 'success-message';
-	messageElement.style.display = 'block';
-	setTimeout(() => { messageElement.style.display = 'none'; }, 5000);
-}
+	function showServiceMessage(message, type) {
+		const messageElement = document.getElementById('service-message');
+		messageElement.textContent = message;
+		messageElement.className = type === 'error' ? 'error-message' : 'success-message';
+		messageElement.style.display = 'block';
+		setTimeout(() => { messageElement.style.display = 'none'; }, 5000);
+	}
 });
