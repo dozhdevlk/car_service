@@ -10,13 +10,29 @@ import (
 )
 
 func adminStatsHandler(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		log.Printf("Ошибка получения сессии: %v", err)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		return
+	}
+
+	userRole, ok := session.Values["role"].(string)
+	if !ok {
+		http.Error(w, "Не авторизован", http.StatusUnauthorized)
+		return
+	}
+	if userRole != "admin" {
+		http.Error(w, "Доступ запрещен", http.StatusForbidden)
+		return
+	}
 	var stats struct {
 		PendingServices int `json:"pending_services"`
 		TotalBookings   int `json:"total_bookings"`
 		TotalUsers      int `json:"total_users"`
 	}
 
-	err := db.QueryRow("SELECT COUNT(*) FROM services WHERE approved = FALSE").Scan(&stats.PendingServices)
+	err = db.QueryRow("SELECT COUNT(*) FROM services WHERE approved = FALSE").Scan(&stats.PendingServices)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -39,6 +55,22 @@ func adminStatsHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminServicesHandler(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		log.Printf("Ошибка получения сессии: %v", err)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		return
+	}
+
+	userRole, ok := session.Values["role"].(string)
+	if !ok {
+		http.Error(w, "Не авторизован", http.StatusUnauthorized)
+		return
+	}
+	if userRole != "admin" {
+		http.Error(w, "Доступ запрещен", http.StatusForbidden)
+		return
+	}
 	rows, err := db.Query(`
 		SELECT id, name, address, phone, approved, owner_id 
 		FROM services 
@@ -72,22 +104,38 @@ func adminServicesHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		log.Printf("Ошибка получения сессии: %v", err)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		return
+	}
+
+	userRole, ok := session.Values["role"].(string)
+	if !ok {
+		http.Error(w, "Не авторизован", http.StatusUnauthorized)
+		return
+	}
+	if userRole != "admin" {
+		http.Error(w, "Доступ запрещен", http.StatusForbidden)
+		return
+	}
+
 	var req struct {
 		ServiceID int `json:"service_id"`
 	}
 
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
+		http.Error(w, "Неверный формат запроса", http.StatusBadRequest)
 		return
 	}
 
-	_, err := db.Exec("UPDATE services SET approved = TRUE WHERE id = $1", req.ServiceID)
+	_, err = db.Exec("UPDATE services SET approved = TRUE WHERE id = $1", req.ServiceID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	session, _ := store.Get(r, "session")
 	adminID, ok := session.Values["user_id"].(int)
 	if ok {
 		_, err = db.Exec("INSERT INTO admin_logs (admin_id, action) VALUES ($1, $2)",
@@ -101,6 +149,23 @@ func adminApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminDisApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		log.Printf("Ошибка получения сессии: %v", err)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		return
+	}
+
+	userRole, ok := session.Values["role"].(string)
+	if !ok {
+		http.Error(w, "Не авторизован", http.StatusUnauthorized)
+		return
+	}
+	if userRole != "admin" {
+		http.Error(w, "Доступ запрещен", http.StatusForbidden)
+		return
+	}
+
 	var req struct {
 		ServiceID int `json:"service_id"`
 	}
@@ -110,17 +175,16 @@ func adminDisApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_, err := db.Exec("UPDATE services SET approved = FALSE WHERE id = $1", req.ServiceID)
+	_, err = db.Exec("UPDATE services SET approved = FALSE WHERE id = $1", req.ServiceID)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	session, _ := store.Get(r, "session")
-	adminID, ok := session.Values["user_id"].(int)
+	adminID, _ := session.Values["user_id"].(int)
 	if ok {
 		_, err = db.Exec("INSERT INTO admin_logs (admin_id, action) VALUES ($1, $2)",
-			adminID, fmt.Sprintf("Approved service ID %d", req.ServiceID))
+			adminID, fmt.Sprintf("Disapproved service ID %d", req.ServiceID))
 		if err != nil {
 			log.Printf("Error logging admin action: %v", err)
 		}
@@ -130,6 +194,23 @@ func adminDisApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		log.Printf("Ошибка получения сессии: %v", err)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		return
+	}
+
+	userRole, ok := session.Values["role"].(string)
+	if !ok {
+		http.Error(w, "Не авторизован", http.StatusUnauthorized)
+		return
+	}
+	if userRole != "admin" {
+		http.Error(w, "Доступ запрещен", http.StatusForbidden)
+		return
+	}
+
 	rows, err := db.Query("SELECT id, name, email, phone, role FROM users ORDER BY id ASC")
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
@@ -158,10 +239,26 @@ func adminUsersHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func deleteUser(w http.ResponseWriter, r *http.Request) {
+	session, err := store.Get(r, "session")
+	if err != nil {
+		log.Printf("Ошибка получения сессии: %v", err)
+		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
+		return
+	}
+
+	userRole, ok := session.Values["role"].(string)
+	if !ok {
+		http.Error(w, "Не авторизован", http.StatusUnauthorized)
+		return
+	}
+	if userRole != "admin" {
+		http.Error(w, "Доступ запрещен", http.StatusForbidden)
+		return
+	}
 	ID := mux.Vars(r)["id"]
 
 	// Удаляем объявление
-	_, err := db.Exec(`
+	_, err = db.Exec(`
         DELETE FROM users WHERE id = $1`,
 		ID)
 
