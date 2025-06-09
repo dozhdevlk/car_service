@@ -121,6 +121,38 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// var telegram_chat_id *int64
+	// err = db.QueryRow(`
+	// SELECT u.telegram_chat_id
+	// JOIN services s ON s.owner_id = u.id
+	// WHERE s.id = $1
+	// `, booking.PartnerID).Scan(&telegram_chat_id)
+
+	var user User
+	err = db.QueryRow(`
+    SELECT 
+        u.name,
+		u.phone,
+        u.email
+    FROM bookings b
+    JOIN users u ON b.user_id = u.id
+    JOIN services s ON b.partner_id = s.id
+	WHERE b.id = $1
+`, bookingID).Scan(&user.Name, &user.Phone, &user.Email)
+
+	message := EscapeMarkdownV2(fmt.Sprintf(
+		"Новая запись №%d:\n\n📅*Дата:* %s\n🕒*Время:* %s\n\n*Клиент(id: %d)*\n\n*Имя:* %s\n*Email:* %s\n*Номер телефона:* %s\n\n*Cтатус: %s*",
+		bookingID,
+		booking.BookingDate,
+		booking.BookingTime,
+		booking.UserID,
+		user.Name,
+		user.Email,
+		user.Phone,
+		booking.Status,
+	))
+	SendTelegramNotification(db, booking.PartnerID, message)
+
 	booking.ID = bookingID
 	booking.UserID = userID
 
