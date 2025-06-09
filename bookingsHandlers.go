@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 
 	"github.com/gorilla/mux"
 )
@@ -150,10 +151,10 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		userID,
 		user.Name,
 		user.Email,
-		user.Phone,
+		strings.ReplaceAll(user.Phone, " ", ""),
 		booking.Status,
 	))
-	SendTelegramNotification(db, userID, message)
+	SendTelegramNotification(db, booking.PartnerID, message)
 
 	booking.ID = bookingID
 	booking.UserID = userID
