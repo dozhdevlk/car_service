@@ -294,7 +294,13 @@ document.addEventListener('DOMContentLoaded', () => {
 				},
 				body: JSON.stringify(bookingData),
 			})
-				.then(response => response.json())
+				.then(response => {
+					if (!response.ok) {
+						const errorText = response.text();
+						throw new Error(errorText);
+					}
+					return response.json();
+				})
 				.then(data => {
 					if (data.error) {
 						showBookingMessage(data.error, 'error');
@@ -304,7 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
 					}
 				})
 				.catch(error => {
-					console.error('Ошибка отправки записи:', error);
+					console.error('Ошибка отправки записи:', error.message);
 					showBookingMessage('Не удалось создать запись. Попробуйте снова.', 'error');
 				});
 		});
