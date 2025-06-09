@@ -72,8 +72,7 @@ function loadBookings() {
 			endList.innerHTML = '';
 
 			const canceledBookings = bookings.filter(booking => booking.status === '❌ Отменена');
-			const workingBookings = bookings.filter(booking => booking.status === '🔧 В работе' || booking.status === '⏳ Ожидает подтверждения'
-			);
+			const workingBookings = bookings.filter(booking => booking.status === '🔧 В работе' || booking.status === '⏳ Ожидает подтверждения' || booking.status === '✅ Подтверждена');
 			const endBookings = bookings.filter(booking => booking.status === '🏁 Завершена');
 
 
