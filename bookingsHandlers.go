@@ -138,8 +138,10 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
     JOIN users u ON b.user_id = u.id
     JOIN services s ON b.partner_id = s.id
 	WHERE b.id = $1
-`, bookingID).Scan(&user.Name, &user.Phone, &user.Email)
-
+	`, bookingID).Scan(&user.Name, &user.Phone, &user.Email)
+	if err != nil {
+		log.Printf("Ошибка получения созданной записи: %v", err)
+	}
 	message := EscapeMarkdownV2(fmt.Sprintf(
 		"Новая запись №%d:\n\n📅*Дата:* %s\n🕒*Время:* %s\n\n*Клиент(id: %d)*\n\n*Имя:* %s\n*Email:* %s\n*Номер телефона:* %s\n\n*Cтатус: %s*",
 		bookingID,
