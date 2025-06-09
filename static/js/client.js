@@ -63,8 +63,6 @@ function loadBookings() {
 			return response.json();
 		})
 		.then(bookings => {
-			const pendingList = document.getElementById('pending-list');
-			const confirmedList = document.getElementById('confirmed-list');
 			const canceledList = document.getElementById('canceled-list');
 			const workingList = document.getElementById('working-list');
 			const endList = document.getElementById('end-list');
@@ -75,59 +73,12 @@ function loadBookings() {
 			workingList.innerHTML = '';
 			endList.innerHTML = '';
 
-			const pendingBookings = bookings.filter(booking => booking.status === 'pending');
-			const confirmedBookings = bookings.filter(booking => booking.status === 'confirmed');
-			const canceledBookings = bookings.filter(booking => booking.status === 'canceled');
-			const workingBookings = bookings.filter(booking => booking.status === 'working')
-			const endBookings = bookings.filter(booking => booking.status === 'end')
+			const canceledBookings = bookings.filter(booking => booking.status === '❌ Отменена');
+			const workingBookings = bookings.filter(booking => booking.status === '🔧 В работе' || booking.status === '⏳ Ожидает подтверждения'
+			);
+			const endBookings = bookings.filter(booking => booking.status === '🏁 Завершена');
 
 
-			if (pendingBookings.length === 0) {
-				pendingList.innerHTML = '<p>Записей нет.</p>';
-			} else {
-				pendingBookings.forEach(booking => {
-					const bookingCard = document.createElement('div');
-					bookingCard.className = 'booking-card';
-					bookingCard.innerHTML = `
-				<div class="booking-info">
-					<p><strong>ID записи:</strong> ${booking.id}</p>
-					<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
-					<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
-					<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
-					<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
-					<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
-					<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
-					<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
-					<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
-					<p><strong>Статус:</strong> ${booking.status}</p>
-				</div>
-			`;
-					pendingList.appendChild(bookingCard);
-				});
-			}
-
-			if (confirmedBookings.length === 0) {
-				confirmedList.innerHTML = '<p>Записей нет.</p>';
-			} else {
-				confirmedBookings.forEach(booking => {
-					const bookingCard = document.createElement('div');
-					bookingCard.className = 'booking-card';
-					bookingCard.innerHTML = `
-			<div class="booking-info">
-				<p><strong>ID записи:</strong> ${booking.id}</p>
-				<p><strong>Название партнера:</strong> ${booking.partner_name}(${booking.partner_id})</p>
-				<p><strong>Телефон партнера:</strong> ${booking.partner_phone}</p>
-				<p><strong>Адрес партнера:</strong> ${booking.partner_address}</p>
-				<p><strong>Имя пользователя:</strong> ${booking.user_name}(${booking.user_id})</p>
-				<p><strong>Телефон пользователя:</strong> ${booking.user_phone}</p>
-				<p><strong>Email пользователя:</strong> ${booking.user_email}</p>
-				<p><strong>Дата бронирования:</strong> ${booking.booking_date}</p>
-				<p><strong>Время бронирования:</strong> ${booking.booking_time}</p>
-				<p><strong>Статус:</strong> ${booking.status}</p>
-			`;
-					confirmedList.appendChild(bookingCard);
-				});
-			}
 
 			if (canceledBookings.length === 0) {
 				canceledList.innerHTML = '<p>Записей нет.</p>';
@@ -206,11 +157,11 @@ function loadBookings() {
 		})
 		.catch(error => {
 			console.error('Ошибка загрузки записей:', error);
-			const pendingList = document.getElementById('pending-list');
-			const confirmedList = document.getElementById('confirmed-list');
+			const pendingList = document.getElementById('end-list');
+			const confirmedList = document.getElementById('working-list');
 			const canceledList = document.getElementById('canceled-list');
-			if (pendingList) pendingList.innerHTML = '<p>Не удалось загрузить записи.</p>';
-			if (confirmedList) confirmedList.innerHTML = '<p>Не удалось загрузить записи.</p>';
+			if (pendingList) endList.innerHTML = '<p>Не удалось загрузить записи.</p>';
+			if (confirmedList) workingListList.innerHTML = '<p>Не удалось загрузить записи.</p>';
 			if (canceledList) canceledList.innerHTML = '<p>Не удалось загрузить записи.</p>';
 		});
 }
