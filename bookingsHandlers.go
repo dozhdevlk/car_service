@@ -147,13 +147,13 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		bookingID,
 		booking.BookingDate,
 		booking.BookingTime,
-		booking.UserID,
+		userID,
 		user.Name,
 		user.Email,
 		user.Phone,
 		booking.Status,
 	))
-	SendTelegramNotification(db, booking.UserID, message)
+	SendTelegramNotification(db, userID, message)
 
 	booking.ID = bookingID
 	booking.UserID = userID
