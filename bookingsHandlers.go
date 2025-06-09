@@ -122,17 +122,19 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	var owner int
 	var user User
 	err = db.QueryRow(`
     SELECT 
         u.name,
 		u.phone,
-        u.email
+        u.email,
+		s.owner_id
     FROM bookings b
     JOIN users u ON b.user_id = u.id
     JOIN services s ON b.partner_id = s.id
 	WHERE b.id = $1
-	`, bookingID).Scan(&user.Name, &user.Phone, &user.Email)
+	`, bookingID).Scan(&user.Name, &user.Phone, &user.Email, &owner)
 	if err != nil {
 		log.Printf("Ошибка получения созданной записи: %v", err)
 	}
@@ -147,7 +149,7 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		strings.ReplaceAll(user.Phone, " ", ""),
 		booking.Status,
 	))
-	SendTelegramNotification(db, booking.PartnerID, message)
+	SendTelegramNotification(db, owner, message)
 
 	booking.ID = bookingID
 	booking.UserID = userID

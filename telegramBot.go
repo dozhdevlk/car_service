@@ -57,7 +57,7 @@ func SendTelegramNotification(db *sql.DB, userID int, message string) {
 	var chatID int64
 	err := db.QueryRow("SELECT telegram_chat_id FROM users WHERE id = $1", userID).Scan(&chatID)
 	if err != nil || chatID == 0 {
-		log.Println("Не удалось получить Telegram chat ID пользователя %d:", userID, err)
+		log.Println("Не удалось получить Telegram chat ID:", userID, err)
 		return
 	}
 
