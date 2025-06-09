@@ -50,3 +50,15 @@ body {
 	min-width: 100px;
 	line-height: 30px;
 }
+
+.booking-card {
+	background-color: #fff;
+	border: 1px solid #ddd;
+	padding: 15px;
+	border-radius: 5px;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.booking-info {
+	margin-bottom: 15px;
+}
