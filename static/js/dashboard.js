@@ -148,6 +148,8 @@ document.addEventListener('DOMContentLoaded', () => {
 	}
 
 	loadAnnouncements(partnerId); // Загружаем объявления при загрузке страницы
+	loadServices(partnerId)
+	loadServiceInfo(partnerId)
 
 
 	document.querySelectorAll('.tab-link').forEach(link => {

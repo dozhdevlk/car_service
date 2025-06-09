@@ -1,25 +1,17 @@
 let allBookings = [];
 
 document.addEventListener('DOMContentLoaded', () => {
-	// Переход на вкладку "Сервисы" при клике на карточку "Новые сервисы"
 	document.getElementById('new-services-card').addEventListener('click', () => {
 		switchTab('services-content');
 	});
-
-	// Переход на вкладку "Все записи" при клике на карточку "Всего записей"
 	document.getElementById('total-bookings-card').addEventListener('click', () => {
 		switchTab('orders-content');
 	});
-
-	// Переход на вкладку "Пользователи" при клике на карточку "Всего пользователей"
 	document.getElementById('total-users-card').addEventListener('click', () => {
 		switchTab('users-content');
 	});
 	loadDashboard();
 
-
-
-	// Переключение вкладок через боковую панель
 	document.querySelectorAll('.tab-link').forEach(link => {
 		link.addEventListener('click', (e) => {
 			e.preventDefault();
