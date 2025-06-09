@@ -317,9 +317,6 @@ function updateBookingStatus(bookingId, status) {
 				alert(data.error);
 			} else {
 				alert(`Запись успешно обновлена`);
-				// Перезагружаем записи, извлекая partnerId из URL
-				const pathSegments = window.location.pathname.split('/').filter(segment => segment);
-				const partnerId = pathSegments[pathSegments.length - 1];
 				loadBookings(partnerId);
 			}
 		})
