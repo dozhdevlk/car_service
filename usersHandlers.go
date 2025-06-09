@@ -118,14 +118,14 @@ func logoutHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	delete(session.Values, "user_id")
+	session.Options.MaxAge = -1
 	if err := session.Save(r, w); err != nil {
-		log.Printf("Ошибка сохранения сессии: %v", err)
+		log.Printf("Ошибка удаления сессии: %v", err)
 		http.Error(w, "Внутренняя ошибка сервера", http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("Пользователь вышел")
+	log.Printf("Пользователь вышел и сессия удалена")
 	w.WriteHeader(http.StatusOK)
 }
 
