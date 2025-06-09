@@ -144,7 +144,7 @@ func userHandler(w http.ResponseWriter, r *http.Request) {
 
 	var user User
 	err = db.QueryRow(`
-		SELECT id, name, email, phone, role, COALESCE(telegram_chat_id, '') AS telegram_chat_id
+		SELECT id, name, email, phone, role, telegram_chat_id
 		FROM users
 		WHERE id = $1
 	`, userID).Scan(&user.ID, &user.Name, &user.Email, &user.Phone, &user.Role, &user.Tg)
