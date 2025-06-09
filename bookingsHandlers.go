@@ -91,7 +91,7 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if userRole != "client" {
-		http.Error(w, userRole, http.StatusForbidden)
+		http.Error(w, "Только клиенты могут создавать бронирования", http.StatusForbidden)
 		return
 	}
 	var existingBooking int
