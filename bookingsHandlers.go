@@ -122,13 +122,6 @@ func createBookingHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// var telegram_chat_id *int64
-	// err = db.QueryRow(`
-	// SELECT u.telegram_chat_id
-	// JOIN services s ON s.owner_id = u.id
-	// WHERE s.id = $1
-	// `, booking.PartnerID).Scan(&telegram_chat_id)
-
 	var user User
 	err = db.QueryRow(`
     SELECT 
