@@ -310,6 +310,7 @@ document.addEventListener('DOMContentLoaded', () => {
 				.catch(error => {
 					console.error('Ошибка отправки записи:', error.message);
 					showBookingMessage(error.message || 'Не удалось создать запись. Попробуйте снова.', 'error');
+					alert(error.message)
 				});
 		});
 	}
