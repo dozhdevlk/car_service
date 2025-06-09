@@ -67,8 +67,6 @@ function loadBookings() {
 			const workingList = document.getElementById('working-list');
 			const endList = document.getElementById('end-list');
 
-			pendingList.innerHTML = '';
-			confirmedList.innerHTML = '';
 			canceledList.innerHTML = '';
 			workingList.innerHTML = '';
 			endList.innerHTML = '';
@@ -157,11 +155,11 @@ function loadBookings() {
 		})
 		.catch(error => {
 			console.error('Ошибка загрузки записей:', error);
-			const pendingList = document.getElementById('end-list');
-			const confirmedList = document.getElementById('working-list');
+			const endList = document.getElementById('end-list');
+			const workingList = document.getElementById('working-list');
 			const canceledList = document.getElementById('canceled-list');
 			if (pendingList) endList.innerHTML = '<p>Не удалось загрузить записи.</p>';
-			if (confirmedList) workingListList.innerHTML = '<p>Не удалось загрузить записи.</p>';
+			if (confirmedList) workingList.innerHTML = '<p>Не удалось загрузить записи.</p>';
 			if (canceledList) canceledList.innerHTML = '<p>Не удалось загрузить записи.</p>';
 		});
 }
