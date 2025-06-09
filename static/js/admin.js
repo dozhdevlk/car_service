@@ -5,12 +5,12 @@ document.addEventListener('DOMContentLoaded', () => {
 	document.getElementById('new-services-card').addEventListener('click', () => {
 		switchTab('services-content');
 	});
-	
+
 	// Переход на вкладку "Все записи" при клике на карточку "Всего записей"
 	document.getElementById('total-bookings-card').addEventListener('click', () => {
 		switchTab('orders-content');
 	});
-	
+
 	// Переход на вкладку "Пользователи" при клике на карточку "Всего пользователей"
 	document.getElementById('total-users-card').addEventListener('click', () => {
 		switchTab('users-content');
@@ -34,7 +34,7 @@ document.addEventListener('DOMContentLoaded', () => {
 			const tabContent = document.getElementById(tabId);
 			tabContent.style.display = 'block';
 			tabContent.classList.add('active');
-			
+
 			if (tabId === 'services-content') {
 				renderServicesTable();
 			}
@@ -317,7 +317,12 @@ function updateBookingStatus(bookingId, status) {
 				alert(data.error);
 			} else {
 				alert(`Запись успешно обновлена`);
-				loadBookings(partnerId);
+				const searchId = document.getElementById('search-id').value;
+				const searchPhone = document.getElementById('search-phone').value;
+				const selectedStatus = document.getElementById('status-filter').value;
+
+				loadAllBookings();
+				applyFilters(selectedStatus, searchId, searchPhone);
 			}
 		})
 		.catch(error => {
