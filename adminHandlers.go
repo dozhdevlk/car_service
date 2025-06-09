@@ -181,7 +181,7 @@ func adminDisApproveServiceHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	adminID, _ := session.Values["user_id"].(int)
+	adminID, ok := session.Values["user_id"].(int)
 	if ok {
 		_, err = db.Exec("INSERT INTO admin_logs (admin_id, action) VALUES ($1, $2)",
 			adminID, fmt.Sprintf("Disapproved service ID %d", req.ServiceID))
