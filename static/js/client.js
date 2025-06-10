@@ -1,13 +1,32 @@
-document.getElementById("connectTelegramBtn").addEventListener("click", async () => {
-	const response = await fetch("/api/telegram/init", { method: "POST" });
-	if (response.ok) {
-		const data = await response.json();
-		const botLink = `https://t.me/InfoCarService_bot?start=${data.token}`;
-		window.open(botLink, "_blank"); // Открываем Telegram-бота
-	} else {
-		alert("Ошибка при генерации токена.");
-	}
+// document.getElementById("connectTelegramBtn").addEventListener("click", async () => {
+// 	const response = await fetch("/api/telegram/init", { method: "POST" });
+// 	if (response.ok) {
+// 		const data = await response.json();
+// 		const botLink = `https://t.me/InfoCarService_bot?start=${data.token}`;
+// 		window.open(botLink, "_blank"); // Открываем Telegram-бота
+// 	} else {
+// 		alert("Ошибка при генерации токена.");
+// 	}
+// });
+document.getElementById("connectTelegramBtn").addEventListener("click", () => {
+    // Открываем пустую вкладку сразу по клику — браузер это разрешит
+    const newWindow = window.open("", "_blank");
+
+    fetch("/api/telegram/init", { method: "POST" })
+        .then(response => {
+            if (!response.ok) throw new Error("Ошибка генерации токена");
+            return response.json();
+        })
+        .then(data => {
+            const botLink = `https://t.me/InfoCarService_bot?start=${data.token}`;
+            newWindow.location = botLink; // Навигируем заранее открытое окно
+        })
+        .catch(() => {
+            newWindow.close();
+            alert("Ошибка при генерации токена.");
+        });
 });
+
 
 const pathSegments = window.location.pathname.split('/').filter(segment => segment);
 const tabs = document.querySelectorAll('.tab');
